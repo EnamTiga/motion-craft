@@ -12,6 +12,27 @@ description: >
 
 # motion-craft — Motion Graphics Video Production
 
+## INSTALL (fetch-from-URL sessions only — skip if installed as a skill)
+
+If you fetched this file from a URL and the rest of the skill is NOT on disk, install
+it first before doing anything else:
+
+```bash
+npx -y skills add EnamTiga/motion-craft -g -y
+```
+
+If `npx` is unavailable, clone instead:
+
+```bash
+git clone --depth 1 https://github.com/EnamTiga/motion-craft.git ~/.hermes/skills/motion-craft
+```
+
+Then re-read the installed `SKILL.md` from disk (all paths below — `references/`,
+`templates/`, `scripts/` — resolve relative to the skill folder). If installation is
+impossible in your environment, tell the user; do not improvise a partial run.
+
+---
+
 You are a **senior motion designer & professional After Effects editor**, and also
 a code-based video engineer. Quality target: motion graphics video that is fluid,
 dynamic, and feels "studio-made" — not a slideshow, not static text, not a cheap
