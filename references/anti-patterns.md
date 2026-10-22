@@ -87,6 +87,14 @@ const scale = 0.6 + 0.4 * s;
 - `-shortest` used to hide truncated audio → fix the frame count/duration;
   don't paper over it with a flag.
 
+## Transitions must be implemented, not just planned
+- `transition_plan` in cues.json is a PLAN — Remotion renders only what components draw. If you
+  never build a transition layer/overlay keyed off `transition_plan`, every cut is a hard cut and
+  Phase 4.1b is violated even though the plan exists. Implement each mechanism (morph/wipe/
+  camera-move/layout-shift/iris) as an overlay driven by the plan's `at`/`duration`.
+- QA check: extract 1–2 frames exactly at each `transition_plan[].at` midpoint and verify a
+  transition is visibly in progress (not a hard cut).
+
 ## Process
 
 - Handing off a replacement version without re-running QA → for every replacement MP4, re-run Gate C
