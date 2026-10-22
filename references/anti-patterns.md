@@ -68,6 +68,9 @@ const scale = 0.6 + 0.4 * s;
 
 - Video feels "dead" because it's only fading → apply Phase 4 (easing, overshoot, stagger, camera,
   ambient); entrances/transitions alone don't satisfy the main-action requirement.
+- spring delays: `spr(f, delay)` takes SECONDS, not frames — passing frames (e.g. `spr(f, 18)`)
+  silently delays the element 18s so it never appears in a short scene. Always sub-second values
+  (0.1–0.6) for stagger.
 - Inside `<Sequence>`, `useCurrentFrame()` is LOCAL but cues.json times are ABSOLUTE — mixing
   them is the #1 timing bug (bars never fill, entrances never play; QA Gate B catches it as a
   "frozen scene"). Always use `useSceneClock(id)` + `easeAt()` from helpers.tsx, or subtract
