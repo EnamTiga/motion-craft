@@ -1,0 +1,50 @@
+import {Easing, interpolate, spring} from 'remotion';
+import cues from './cues.json';
+
+// Single source of configuration: cues.json. Don't hardcode FPS/dimensions anywhere else.
+export const FPS = cues.fps;
+export const W = cues.width;
+export const H = cues.height;
+export const totalFrames = Math.ceil(cues.dur * FPS);
+
+/** seconds → frames (rounded to nearest). All component timing goes through this. */
+export const fr = (seconds: number) => Math.round(seconds * FPS);
+
+/** ease-in-out cubic between two times (seconds, from cues.json), clamped. */
+export const ease = (
+  frame: number,
+  startSeconds: number,
+  endSeconds: number,
+  from = 0,
+  to = 1,
+) =>
+  interpolate(frame, [fr(startSeconds), fr(endSeconds)], [from, to], {
+    easing: Easing.inOut(Easing.cubic),
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+/** spring with a delay (seconds), safe against negative frames. */
+export const spr = (frame: number, delaySeconds = 0) =>
+  spring({
+    frame: Math.max(0, frame - fr(delaySeconds)),
+    fps: FPS,
+    config: {damping: 13, stiffness: 170, mass: 0.8},
+  });
+
+/** sinusoidal ambient motion based on seconds (not frames) — deterministic. */
+export const breathe = (frame: number, amplitude = 0.02, periodSeconds = 2.4) =>
+  1 + amplitude * Math.sin((frame / FPS) * ((Math.PI * 2) / periodSeconds));
+
+/** decaying screen shake: used for a few frames after an impact (seconds). */
+export const shake = (frame: number, impactSeconds: number, seconds = 0.3) => {
+  const t = frame / FPS - impactSeconds;
+  if (t < 0 || t > seconds) return {x: 0, y: 0};
+  const decay = 1 - t / seconds;
+  const seedA = Math.sin(frame * 12.9898) * 43758.5453;
+  const seedB = Math.sin(frame * 78.233) * 12345.6789;
+  return {
+    x: (seedA - Math.floor(seedA) - 0.5) * 24 * decay,
+    y: (seedB - Math.floor(seedB) - 0.5) * 24 * decay,
+  };
+};
