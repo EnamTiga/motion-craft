@@ -8,6 +8,23 @@ ElevenLabs modes).
 > Install: `npx skills add <repo>/motion-craft` *(or copy this skill folder into your
 > harness's skills directory)*
 
+## Quick install (copy & paste)
+
+Give your AI agent one message — it reads the repo and follows the skill:
+
+```bash
+npx -y skills add EnamTiga/motion-craft -g -y
+```
+
+Then tell your agent:
+
+```
+Read the motion-craft skill (SKILL.md) and follow it to make my video.
+```
+
+That's it — the skill is self-describing: the agent loads `SKILL.md`, which routes it
+through the 8 phases and the reference files on demand. No extra configuration needed.
+
 ## Contents
 
 ```
