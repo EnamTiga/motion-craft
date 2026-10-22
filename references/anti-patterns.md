@@ -68,10 +68,18 @@ const scale = 0.6 + 0.4 * s;
 
 - Video feels "dead" because it's only fading → apply Phase 4 (easing, overshoot, stagger, camera,
   ambient); entrances/transitions alone don't satisfy the main-action requirement.
+- Inside `<Sequence>`, `useCurrentFrame()` is LOCAL but cues.json times are ABSOLUTE — mixing
+  them is the #1 timing bug (bars never fill, entrances never play; QA Gate B catches it as a
+  "frozen scene"). Always use `useSceneClock(id)` + `easeAt()` from helpers.tsx, or subtract
+  the Sequence's `from` before passing absolute seconds to helpers.
 - External components used raw (library default timing, magic FPS) → run the adaptation
   checklist in `references/elements-ecosystem.md`.
 - Identical transitions at every boundary (automatic whoosh/thud) → violates 4.1b; pick a
   mechanism per boundary from the `transition_plan`.
+- **Never use `-map 0:a` when muxing the mix into a rendered MP4:** if the video already has an
+  audio stream (even silence), `-map 0:a` keeps the OLD audio — the final MP4 stays silent
+  (QA Gate E catches it as full-duration silence). Always use `-map 0:v -map 1:a` (video from
+  the render, audio from the mix).
 - Final audio measured only on the WAV before AAC → loudness can shift; measure the final MP4.
 - `-shortest` used to hide truncated audio → fix the frame count/duration;
   don't paper over it with a flag.

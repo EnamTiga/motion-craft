@@ -14,7 +14,7 @@
  * All timing values passed to these helpers come from cue events (seconds) —
  * never hardcode new timing in components. See SKILL.md Phase 4.4.
  */
-import {Easing, interpolate, spring} from 'remotion';
+import {Easing, interpolate, spring, useCurrentFrame} from 'remotion';
 import cues from './cues.json';
 
 // Single source of configuration: cues.json. Don't hardcode FPS/dimensions anywhere else.
@@ -74,3 +74,32 @@ export const scene = (id: string) => {
 
 /** seconds → start frame for a cue, e.g. <Sequence from={cueAt(1.2)}> */
 export const cueAt = (seconds: number) => fr(seconds);
+
+/**
+ * Convert cue-event ABSOLUTE seconds to SECONDS-INSIDE-THIS-SEQUENCE.
+ * useCurrentFrame() inside <Sequence from={cueAt(s.start)}> is local (0 at the
+ * scene boundary), but cues.json times are absolute — mixing them is the most
+ * common motion-craft bug (bars never fill, entrances never play).
+ * Usage inside a scene component:
+ *   const t = useSceneClock('s2-bukti');   // local frame → absolute seconds
+ *   const a = easeAt(t, cue.t, cue.t + cue.duration);
+ */
+export const useSceneClock = (id: string) => {
+  const frame = useCurrentFrame();
+  return frame / FPS + scene(id).start;
+};
+
+/** ease variant taking ABSOLUTE seconds (pair with useSceneClock). */
+export const easeAt = (
+  absSeconds: number,
+  startSeconds: number,
+  endSeconds: number,
+  from = 0,
+  to = 1,
+) =>
+  interpolate(
+    fr(absSeconds),
+    [fr(startSeconds), fr(endSeconds)],
+    [from, to],
+    {easing: Easing.inOut(Easing.cubic), extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+  );
