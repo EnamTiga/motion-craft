@@ -10,20 +10,20 @@ ElevenLabs modes).
 
 ## Quick install (copy & paste)
 
-Give your AI agent one message — it reads the repo and follows the skill:
-
-```bash
-npx -y skills add EnamTiga/motion-craft -g -y
-```
-
-Then tell your agent:
+Give your AI agent one message — it fetches the repo and follows the instructions:
 
 ```
-Read the motion-craft skill (SKILL.md) and follow it to make my video.
+Fetch and follow instructions from https://raw.githubusercontent.com/EnamTiga/motion-craft/refs/heads/main/SKILL.md
 ```
 
 That's it — the skill is self-describing: the agent loads `SKILL.md`, which routes it
 through the 8 phases and the reference files on demand. No extra configuration needed.
+
+Or install it permanently as a skill:
+
+```bash
+npx -y skills add EnamTiga/motion-craft -g -y
+```
 
 ## Contents
 
