@@ -1,0 +1,44 @@
+name: validate
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install jsonschema
+      - name: cues.example.json validates against schema
+        run: |
+          python3 -c "import json,jsonschema; jsonschema.validate(json.load(open('templates/cues.example.json')), json.load(open('templates/cues.schema.json'))); print('schema: OK')"
+      - name: make_cues.py accepts the example plan and rejects a rule-breaking one
+        run: |
+          python3 - <<'EOF'
+          import json, subprocess, sys, tempfile, os
+          ex = json.load(open('templates/cues.example.json'))
+          plan = {k: ex[k] for k in ('fps','width','height','dur','scenes','transition_plan','voiceover','sfx','music') if k in ex}
+          with tempfile.TemporaryDirectory() as td:
+              os.chdir(td)
+              json.dump(plan, open('p.json','w'))
+              r = subprocess.run([sys.executable, os.path.expandvars('$GITHUB_WORKSPACE/templates/make_cues.py'), 'p.json'], capture_output=True, text=True)
+              assert r.returncode == 0 and 'cues ok' in r.stdout, r.stdout + r.stderr
+              bad = json.loads(json.dumps(plan))
+              bad['transition_plan'] = [{**bad['transition_plan'][0], 'at': t} for t in [3.4,7.0,10.6,14.2]]
+              bad['scenes'][0]['mainActions'] = bad['scenes'][0]['mainActions'][:1]
+              json.dump(bad, open('bad.json','w'))
+              r = subprocess.run([sys.executable, os.path.expandvars('$GITHUB_WORKSPACE/templates/make_cues.py'), 'bad.json'], capture_output=True, text=True)
+              assert r.returncode != 0, 'validator accepted a rule-breaking plan!'
+              print('make_cues.py: OK')
+          EOF
+      - name: shell syntax
+        run: bash -n scripts/qa_check.sh
+      - name: no Indonesian keywords left
+        run: |
+          ! grep -rliE 'adegan|wajib|dilarang|terverifikasi|penyerahan|tanya dulu|bundel' --include='*.md' --include='*.sh' --include='*.tsx' .
+      - name: qa_check.sh smoke test on a generated MP4 (needs ffmpeg; soft-fail if unavailable)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          ffmpeg -y -loglevel error -f lavfi -i testsrc=duration=3:size=320x240:rate=30 -f lavfi -i sine=frequency=440:duration=3 -c:v libx264 -c:a aac -pix_fmt yuv420p dummy.mp4
+          bash scripts/qa_check.sh dummy.mp4 30 3 > /dev/null && echo "qa_check.sh: OK"

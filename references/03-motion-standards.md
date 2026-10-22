@@ -1,5 +1,10 @@
 # PHASE 4 — MOTION STANDARDS (AFTER EFFECTS GRADE) — MANDATORY
 
+> **Read order when context is tight:** 4.1a (scene cycle) and 4.1b (transition variety)
+> are the two rules QA will fail you on — never skip them. 4.1 (principles) and 4.5
+> (recipes) can be skimmed if you already know animation principles; 4.3–4.4 (Remotion
+> rules, helpers) are mandatory once you write code.
+
 ## 4.1 Principles that must be visible in the result
 
 - **Easing:** primary motion must never be linear. Use spring / `Easing.out(cubic)` /

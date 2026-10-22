@@ -21,8 +21,9 @@ User prompts in chat only contain topic/product/context and references. All work
 rules live in this skill. Assume a blank session: no prior memory. Start from
 **PHASE 1 (ask first)**. Do not summarize this skill to the user.
 
-Reply language: follow the user's language (default: casual Indonesian). Keep it
-short, no lectures — the user is often reading from a phone.
+Reply language: follow the user's language — but note this skill's documentation is
+English; translate your chat replies, not the skill. Keep replies short, no lectures —
+the user is often reading from a phone.
 
 ## Skill map (read as needed, don't open everything at once)
 
@@ -55,6 +56,11 @@ short, no lectures — the user is often reading from a phone.
 
 ## Rule priority and definition of done
 
+- **Single source of truth:** each rule is stated fully in exactly one file; other files
+  link to it. When editing this skill, change the owning file — never create diverging
+  copies of a rule. (Owner map: voice-over modes & API key safety → this page +
+  `05-audio-design.md`; motion rules → `03-motion-standards.md`; QA statuses →
+  `06-qa-gates.md`; asset pipeline → `01-brief-and-assets.md`.)
 - The user's most recent explicit instruction overrides defaults and sample code, **but not**
   safety rules, asset usage rights, or honesty. Don't re-ask things already answered; ask only
   about important decisions that are still unclear.
@@ -117,10 +123,12 @@ Cross-mode rules:
 1. Read the user's brief/references, look for licensed assets → **ask once** (one numbered message
    with a/b/c options, including the voice-over A/B/C question).
 2. Do labeled fact research; build the concept + beat plan + **transition plan** + music plan.
-3. Write & run `make_cues.py` → `src/cues.json` = **THE single source of timing**
-   for the Remotion composition, audio scripts, subtitles, and QA.
-4. Set up Remotion (or the HTML+Playwright+ffmpeg fallback), write scenes from the motion plan
-   using `templates/helpers.tsx` (FPS/dimensions from cues.json).
+3. Validate & run `templates/make_cues.py plan.json --out src/cues.json` → `src/cues.json`
+   = **THE single source of timing** for the Remotion composition, audio scripts,
+   subtitles, and QA. The validator enforces scene cycle & transition-variety rules
+   mechanically — fix the plan, don't bypass it.
+4. Set up Remotion (or the HTML+Camoufox+ffmpeg fallback), copy `templates/helpers.tsx`
+   to `src/helpers.tsx`, write scenes from the motion plan (FPS/dimensions from cues.json).
 5. Audio: music+SFX synthesized from code (numpy/scipy), voice-over per mode A/B/C,
    loudnorm −14 ±1 LUFS / TP ≤ −1.2 dBFS.
 6. Evidenced 5-gate QA (`qa/report.md` + `qa/checks.json`, status PASS / FAIL /

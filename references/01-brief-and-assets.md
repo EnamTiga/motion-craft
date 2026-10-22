@@ -80,6 +80,9 @@ static photo slideshow. Photos must participate in the choreography (see Phase 4
 
 Format: numbered, each question has short (lettered) options so the user can answer
 quickly, e.g. answers: `1b 2a 3c`. Always offer an "up to you" option.
+**At most 6 questions in one message** — pick the ones that most determine the design;
+the rest become assumptions recorded in the concept summary (see 1c). The list below is
+a question bank, not a mandatory full form:
 
 ```
 Before I build, answer briefly (anything can be "up to you"):

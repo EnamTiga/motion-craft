@@ -15,7 +15,7 @@ SKILL.md                    entry: role, absolute rules, phase router, voice-ove
 references/
   01-brief-and-assets.md    Phase 1 — ask first, visual assets (browser/Camoufox), image quality
   02-facts-and-concept.md   Phases 2–3 — labeled fact research, concept, motion plan, cues.json
-  03-motion-standards.md    Phase 4 — AE-grade motion standards, anti-slop, Remotion rules
+  03-motion-standards.md    Phase 4 — AE-grade motion standards, anti-slop, Remotion rules (read-order note at top)
   04-technical-setup.md     Phase 5 — Remotion scaffold, render, fallback
   05-audio-design.md        Phase 6 — code-synthesized music/SFX, voice-over modes B & C
   06-qa-gates.md            Phase 7 — evidenced 5-gate QA (A–E) + Phase 8 handoff
@@ -23,10 +23,12 @@ references/
   elements-ecosystem.md     external component curation + mandatory adaptation checklist
   anti-patterns.md          pitfalls that have actually happened, ❌/✅ format
 templates/
-  helpers.tsx               FPS/ease/spring/fr helpers — utilities, not scene templates
+  helpers.tsx               FPS/ease/spring/fr/scene helpers — utilities, not scene templates
+  make_cues.py              plan → validated src/cues.json generator (enforces scene & transition rules)
   cues.schema.json          the cues.json contract schema
   cues.example.json         a complete cues.json example
 scripts/qa_check.sh         automated QA: metadata, decode, loudness, black/freeze/silence
+.github/workflows/validate.yml  CI: schema validation, make_cues positive/negative tests, language check, qa_check smoke test
 ```
 
 ## Where this skill sits

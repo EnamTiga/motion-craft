@@ -38,6 +38,10 @@ export const Root: React.FC = () => (
   <Composition id="Main" component={Main} durationInFrames={Math.ceil(cues.dur * cues.fps)} fps={cues.fps} width={cues.width} height={cues.height} />
 );
 EOF
+# copy helpers into src/ — the relative import './cues.json' assumes this layout
+cp <skill-folder>/templates/helpers.tsx src/helpers.tsx
+# generate src/cues.json from your structured plan (see templates/make_cues.py):
+python3 <skill-folder>/templates/make_cues.py plan.json --out src/cues.json
 npm install 2>&1 | tail -2
 cp node_modules/@fontsource/poppins/files/poppins-latin-900-normal.woff2 public/pop-900.woff2
 cp node_modules/@fontsource/poppins/files/poppins-latin-600-normal.woff2 public/pop-600.woff2
