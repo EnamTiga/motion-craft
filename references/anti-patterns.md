@@ -105,3 +105,13 @@ const scale = 0.6 + 0.4 * s;
   ask-first decision → wrong; installing tools to run an already-requested task is automatic.
   What does require asking: paid services (TTS), special assets, and
   content decisions.
+
+## Photos (reference images)
+- An `<img>` dropped on top of an existing layout WILL overlap something — check every photo's
+  final position against every other element at the scene's END state, then give it a dedicated
+  empty region (e.g. below the chart, bottom-corner circle crop) instead of "floating" it.
+- Wrong query = irrelevant photo (searching "shocked face" returned people at dinner). Verify each
+  downloaded image with vision before using it; pick from a rendered search page, not the API.
+- Keep photos ≥2× their on-screen display size (card 380px wide → source ≥760px wide) and never
+  upscale: zooming past source resolution is a Gate B major bug.
+- Record every photo in `assets.json` (scene → file → source URL → usage) so the check is auditable.
