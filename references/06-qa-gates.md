@@ -53,6 +53,21 @@ the target specification, tool configuration, and a table:
   a new mechanism.
 - Audit the music plan and stems: character fits the context, not an old recipe with different
   chords, SFX match their objects, and narration space and the ending are designed.
+- **Scratch folder and free disk check (mandatory, before any render).** Rendering writes
+  frames, temp files, and the output MP4 outside the project tree as well as inside it, and a
+  full disk mid-render wastes the whole run (on the Muse VM, `/tmp` is a 512 MB tmpfs and a
+  render there died with ENOSPC). Before Gate A passes:
+  1. Pick the scratch folder for this render (the folder the render tool uses for temp files,
+     e.g. via `TMPDIR`). If `/tmp` is a small tmpfs (check with `df -h /tmp`), set the scratch
+     folder outside `/tmp`, on the large disk (e.g. `/var/tmp/<project>` or a folder under the
+     workspace disk), and use it for the render commands.
+  2. Measure free space on the scratch filesystem (`df -h <scratch folder>`) and on the output
+     filesystem. Free space on each must be at least 2 GB and at least 5x the expected final
+     MP4 size; if either is lower, free space, move the scratch folder, or stop and report.
+     Do not start the render on a guess.
+  3. Record the result in `qa/report.md` and in `qa/checks.json` under `gateA`:
+     `scratchDir` (absolute path), `scratchFreeBytes` (number, from `df`), `outputFreeBytes`
+     (number), and `diskCheck` (`PASS` or `FAIL`). A missing record means Gate A is not passed.
 
 ## 7.3 Gate B — stills & temporal testing before full render
 
@@ -145,6 +160,47 @@ For mode D (muse-tts), the per-word highlight target below is NOT APPLICABLE; ve
   and mood changes matching scenes. LUFS measurement alone **does not prove**
   comfort or intelligibility. If you can't listen, mark the perceptual check UNVERIFIED
   and request a specific listening review.
+
+**Perceptual listening step (defined, mandatory).** The listening above is not optional
+color: it is a named sub-check with a named listener, named excerpts, and a written record.
+
+- **Who listens:** the reviewer (the checker role, never the builder who rendered the file).
+  If the reviewer has no audio playback path, a named human listener does it instead (the
+  project owner or a person the owner appoints). "The agent" is not a listener name; record
+  the role, e.g. `reviewer`, or the human's name/role.
+- **Excerpts that must be heard** (full playback is better, but these are the minimum):
+  1. The opening, 0:00 to 0:05, including the first narration entry if there is narration.
+  2. The first 2 seconds of every narration segment (for Mode D: every `segmentTimings`
+     start), checking word clarity and that music/SFX do not cover the entry.
+  3. A 5 second excerpt around the midpoint of the video.
+  4. The loudest section (climax, strongest SFX, or build/drop), checking for piercing
+     SFX, pumping, distortion, and clipping.
+  5. The final 5 seconds, including the ending chord and the fade out.
+  6. Every interval the silence/clipping detectors flagged during Gate C/E scans.
+- **Record in `qa/checks.json`** under `gateE.perceptualListening`, exactly this shape:
+
+  ```json
+  "perceptualListening": {
+    "status": "PASS",
+    "listenerRole": "reviewer",
+    "listenedAt": "2026-10-23T10:00:00+07:00",
+    "excerpts": [
+      {"startS": 0.0, "endS": 5.0, "label": "opening", "result": "PASS", "notes": "first word clear, music under narration"}
+    ],
+    "findings": "none",
+    "notListenedReason": null
+  }
+  ```
+
+  `status` is `PASS`, `FAIL`, or `UNVERIFIED`. One `excerpts` entry per excerpt heard, with
+  its own `result` and `notes`; a `FAIL` excerpt makes the sub-check `FAIL` and follows the
+  retest flow in 7.7 like any other Gate E failure.
+- **If listening is truly impossible** (no playback path for the reviewer and no human
+  listener available): set `status` to `UNVERIFIED`, `excerpts` to `[]`, and
+  `notListenedReason` to the specific cause (what path was tried and why it cannot play
+  audio), plus the specific listening request sent to the user. An UNVERIFIED perceptual
+  sub-check with no `perceptualListening` record, or with an empty `notListenedReason`,
+  counts as Gate E not run, not as a passed gate with a footnote.
 
 ## 7.7 Retest and delivery gate
 

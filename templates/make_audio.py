@@ -10,14 +10,18 @@ narration stems for QA. If there is narration, add the narration stem and duckin
 to the final mix; this instrumental example does not do that automatically.
 
 Usage:
-    python3 make_audio.py
+    python3 make_audio.py [--no-finalize]
 
 Run from the project root. Reads src/cues.json (field contract:
 templates/cues.schema.json; music fields are camelCase, e.g. clapFrom, hatFrom,
-arpFrom, finalChord) and writes raw_mix.wav in the project root. Normalize
-raw_mix.wav to public/mix.wav afterwards (see references/05-audio-design.md).
+arpFrom, finalChord) and writes raw_mix.wav in the project root. By default it
+then finalizes raw_mix.wav to public/mix.wav with the standard two-stage chain
+(measured loudnorm, then a limiter as the last stage; see finalize_audio below
+and references/05-audio-design.md section 6.3). Pass --no-finalize to write
+only raw_mix.wav and normalize it yourself.
 """
 import numpy as np, json, wave
+import os, subprocess, sys
 from scipy.signal import butter, sosfilt
 np.random.seed(7)
 SR = 44100
@@ -166,3 +170,56 @@ mix = mix / np.max(np.abs(mix)) * .9
 with wave.open('raw_mix.wav', 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((mix * 32767).astype('<i2').tobytes())
 print('audio ok', n / SR, 'seconds')
+
+# ---- finalize (default): two-stage loudnorm + limiter -> public/mix.wav
+# Standard chain since v1.3, from a measured production fix: a single loudnorm
+# pass left the WAV on target but the AAC encode in the final MP4 overshot to
+# -0.7 dBFS true peak (Gate E limit is -1.2 dBTP). Stage 1 measures loudnorm,
+# stage 2 applies it linearly with the measured values and ends with
+# alimiter=limit=0.72:level=false as a hard ceiling; with that ceiling the
+# final MP4 measured -1.7 dBFS true peak at -14.5 LUFS. Do not drop the limiter
+# stage or raise its limit without re-measuring the final MP4 per Gate E.
+LOUDNORM_TARGET = 'I=-14:TP=-1.5:LRA=11'
+LIMITER = 'alimiter=limit=0.72:level=false'
+
+def _loudnorm_measure(path):
+    r = subprocess.run(['ffmpeg', '-i', path, '-af',
+                        f'loudnorm={LOUDNORM_TARGET}:print_format=json',
+                        '-f', 'null', '-'], capture_output=True, text=True)
+    err = r.stderr
+    start = err.rfind('{'); end = err.rfind('}')
+    if start < 0 or end <= start: return None
+    try: return json.loads(err[start:end + 1])
+    except ValueError: return None
+
+def finalize_audio(raw='raw_mix.wav', out='public/mix.wav'):
+    if not _ffmpeg_ok():
+        print('WARNING: ffmpeg not found; wrote raw_mix.wav only. Normalize it manually (05 section 6.3).')
+        return False
+    m = _loudnorm_measure(raw)
+    if m:
+        chain = (f"loudnorm={LOUDNORM_TARGET}:measured_I={m['input_i']}:measured_TP={m['input_tp']}"
+                 f":measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}"
+                 f":offset={m['target_offset']}:linear=true,{LIMITER}")
+    else:
+        print('WARNING: loudnorm measure pass failed; falling back to a single-stage chain.')
+        chain = f'loudnorm={LOUDNORM_TARGET},{LIMITER}'
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    r = subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', raw,
+                        '-af', chain, '-ar', str(SR), out], capture_output=True, text=True)
+    if r.returncode != 0:
+        print('WARNING: finalize failed; wrote raw_mix.wav only.\n' + r.stderr.strip())
+        return False
+    print('final mix ok', out, '(two-stage loudnorm + limiter)')
+    return True
+
+def _ffmpeg_ok():
+    try:
+        return subprocess.run(['ffmpeg', '-version'], capture_output=True).returncode == 0
+    except OSError:
+        return False
+
+if '--no-finalize' in sys.argv:
+    print('finalize skipped (--no-finalize); normalize raw_mix.wav manually (05 section 6.3).')
+else:
+    finalize_audio()

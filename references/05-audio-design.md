@@ -56,11 +56,16 @@ this instrumental example does not do that automatically.
 The source file is `templates/make_audio.py`. Copy it to the project root (or call it from the skill
 folder) and run it from the project root: it reads `src/cues.json` and writes `raw_mix.wav`.
 
-Run it and normalize, then **verify the numbers**:
+`make_audio.py` finalizes by default: after writing `raw_mix.wav` it runs the standard
+two-stage chain (stage 1 measures loudnorm, stage 2 applies it linearly with the measured
+values and ends with `alimiter=limit=0.72:level=false` as a hard ceiling) and writes
+`public/mix.wav`. The limiter stage is not optional polish: without it, a WAV that measured
+on target overshot to −0.7 dBFS true peak after AAC encoding in the final MP4, above the
+Gate E limit of −1.2 dBTP. Pass `--no-finalize` to write only `raw_mix.wav` and normalize
+manually with the same chain. Either way, **verify the numbers** on the result:
 
 ```bash
 python3 make_audio.py
-ffmpeg -y -loglevel error -i raw_mix.wav -af loudnorm=I=-14:TP=-1.5:LRA=11 -ar 44100 public/mix.wav
 ffmpeg -nostats -i public/mix.wav -af ebur128=peak=true -f null - 2>&1 | grep -E "I:|Peak:" | tail -2
 ```
 
@@ -193,7 +198,21 @@ Flow:
 2. Split the script per segment = per scene, or per complete sentence/phrase,
    following the scene boundaries in the beat plan. One segment must never cut
    a phrase in the middle.
-3. Synthesize per segment (Indonesian example):
+3. **Word limit per segment (mandatory): at most 15 words per segment.** Reason:
+   Mode D subtitles are phrase level, one segment is one subtitle unit, so the
+   segment length is the subtitle precision. Normal English speech runs at
+   about 2.5 words per second, and the reference Mode D production (37.5
+   seconds, 6 segments) averaged 6.25 seconds per segment: 6.25 x 2.5 is about
+   15 words. Capping at 15 keeps a segment near 6 seconds, short enough for its
+   phrase subtitle to stay in sync and readable; the longest reference segment
+   (20 words, 7.97 seconds) already held one subtitle on screen for almost 8
+   seconds. If a sentence runs over 15 words, split it at a clause boundary
+   (comma, semicolon, conjunction) into two segments; never split mid-phrase
+   and never speed up the audio to fit. Count words before synthesis, at script
+   approval time, and record the per-segment counts in the script document.
+   For Indonesian narration, apply the same 15-word cap as the default: the
+   cap exists to bound subtitle duration, not to model one language's rate.
+4. Synthesize per segment (Indonesian example):
 
    ```bash
    /opt/hatch/bin/tts speak --text "<teks segmen>" --language id --format mp3 --output public/vo-seg-01.mp3
@@ -204,28 +223,28 @@ Flow:
    `synthesize-script` path (not a reason to use script mode for Mode D,
    because Mode D needs one file per segment); voice quality varies per
    language; there is no API key and no third-party quota.
-4. Measure each segment's duration, never guess it:
+5. Measure each segment's duration, never guess it:
 
    ```bash
    ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 public/vo-seg-01.mp3
    ```
-5. Cumulative segment offsets become the timing boundaries in `cues.json`:
+6. Cumulative segment offsets become the timing boundaries in `cues.json`:
    segment 1 starts at 0.00, each next segment starts at the previous segment's
    end (plus a pause only when one is planned in the beat plan, and that pause
    is recorded). Total VO duration must not exceed `dur` in cues; if it does,
    revise the beat plan via `make_cues.py` — never cut or speed up the audio.
-6. Mode D subtitles are phrase/segment level: each segment's text goes into
-   the `captions` field in cues with start/end from step 5. `wordTimings` for
+7. Mode D subtitles are phrase/segment level: each segment's text goes into
+   the `captions` field in cues with start/end from step 6. `wordTimings` for
    Mode D is EMPTY or ABSENT. NEVER divide a segment's duration evenly per
    word, and NEVER invent per-word timestamps.
-7. Segment files are named `public/vo-seg-NN.mp3` (NN two digits, in scene
+8. Segment files are named `public/vo-seg-NN.mp3` (NN two digits, in scene
    order). The trace file `qa/vo-muse-tts-segments.json` records, per segment:
    text, file, and the raw ffprobe duration. Concatenate the segments into
    `public/vo.mp3` with ffmpeg concat (or an equivalent filter) without
    changing speed and without cutting content; after concatenation, re-measure
    the combined duration with ffprobe — it must equal the sum of the segment
    durations +/- 0.1 seconds, otherwise investigate before cues are locked.
-8. The voiceover block in cues for Mode D looks exactly like this:
+9. The voiceover block in cues for Mode D looks exactly like this:
 
    ```json
    "voiceover": {
@@ -243,10 +262,10 @@ Flow:
    `segmentTimings` is the only narration timing source for Mode D, and
    `sourceTimestamps` points to the trace file holding the raw per-segment
    ffprobe durations.
-9. Music and SFX stay mandatory, ducking against narration is still designed,
+10. Music and SFX stay mandatory, ducking against narration is still designed,
    and the final loudness target stays -14 +/-1 LUFS with true peak
    <= -1.2 dBFS (the existing Phase 6 rules, unchanged).
-10. Gate D for Mode D: the per-word highlight deviation target is
+11. Gate D for Mode D: the per-word highlight deviation target is
     **NOT APPLICABLE**, because Mode D does not produce per-word timestamps
     ("Mode D tidak menghasilkan timestamp per kata"). What is verified
     instead: segment-boundary synchronization (start, middle, and end of the
