@@ -9,7 +9,17 @@ Give the agent a topic or a product. It asks one round of questions, plans the v
 
 ## Demo
 
-[Watch the demo](demo/motion-craft-promo.mp4)
+**16:9 demo**
+
+https://github.com/user-attachments/assets/101bfff4-3fd5-4ec0-ba9f-e4c764ed4ec4
+
+File: [demo/motion-craft-demo-16x9.mp4](demo/motion-craft-demo-16x9.mp4)
+
+**9:16 promo**
+
+https://github.com/user-attachments/assets/0d3dff06-9cf3-43c1-986c-ba71904b02c8
+
+File: [demo/motion-craft-promo.mp4](demo/motion-craft-promo.mp4)
 
 This 37 second vertical (9:16) video was produced by motion-craft itself using Mode D (Muse TTS). Its final QA verdict was SHIP across the 5 gates below, with one Gate E sub-check (perceptual listening) left UNVERIFIED.
 
