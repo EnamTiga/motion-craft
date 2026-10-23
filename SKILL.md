@@ -7,12 +7,14 @@ description: >
   asks for "make a video", "motion video", "product/educational/short ad video",
   "Remotion animation", "video from an article/guide/numbers". Triggers: motion video,
   motion graphics, product video, educational video, animated reels/shorts, remotion video,
-  text animation, short ad video.
+  text animation, short ad video. Indonesian triggers: "buatkan video", "video promosi",
+  "video edukasi". Muse voice-over trigger: "pakai Muse" for narration (voiceover
+  source `muse-tts` in cues.json), e.g. "buatkan video promosi dengan narasi suara Muse".
 ---
 
 # motion-craft — Motion Graphics Video Production
 
-## INSTALL (fetch-from-URL sessions only — skip if installed as a skill)
+## INSTALL (skip if installed as a skill)
 
 If you fetched this file from a URL and the rest of the skill is NOT on disk, install
 it first before doing anything else:
@@ -30,6 +32,19 @@ git clone --depth 1 https://github.com/EnamTiga/motion-craft.git ~/.hermes/skill
 Then re-read the installed `SKILL.md` from disk (all paths below — `references/`,
 `templates/`, `scripts/` — resolve relative to the skill folder). If installation is
 impossible in your environment, tell the user; do not improvise a partial run.
+
+**In Muse:** copy this skill folder into the Muse custom skills directory:
+
+```bash
+mkdir -p ~/workspace/custom-skills
+cp -r <folder-skill-ini> ~/workspace/custom-skills/motion-craft
+```
+
+In Muse, the skill counts as installed when the folder
+`~/workspace/custom-skills/motion-craft/` exists and the paths `references/`,
+`templates/`, `scripts/` resolve relative to that folder. The Hermes path
+`~/.hermes/skills/` above stays valid for other harnesses; it is no longer the
+only install path.
 
 ---
 
@@ -105,13 +120,14 @@ Say so plainly in one sentence. Then still ask (Phase 1), and instead
 deliver a complete project (all files + a README with render steps `npx remotion render ...`)
 as a downloadable file. Don't pretend you already rendered.
 
-## Voice-over: three modes (decide in Phase 1, execute in Phase 6)
+## Voice-over: three modes, plus Mode D when running in Muse (decide in Phase 1, execute in Phase 6)
 
 | Mode | When | Summary |
 |---|---|---|
 | **A. No voice-over** (default) | User didn't ask for narration | On-screen captions/copy carry the message. No paid services without consent. |
 | **B. User-supplied audio** | User sends a narration recording | Timestamps = **WhisperX required**, UNLESS the user already supplied valid timestamps → use them directly (validate first). The user's audio is the primary timing reference; don't regenerate it, don't ask for a TTS API key. |
 | **C. ElevenLabs TTS API** | User asks for narration & agrees to use the API | Draft narration → user approves → generate with the user's chosen `model_id` + `voice_id` → use **timestamps/alignment from the API response** (no WhisperX needed); if the endpoint doesn't provide alignment, measure each clip's duration — don't invent per-word timestamps. |
+| **D. Muse TTS ("Pakai Muse")** | Running in Muse (detected, see 3.1 contract in references/05 section 6.6) AND user asks for narration | Draft narration, user approves, synthesize **per segment** with Muse TTS (`--language id` for Indonesian), measure each segment with ffprobe, cumulative offsets become segment boundaries in cues.json, phrase-level subtitles. **No WhisperX, no per-word timestamps, no API key.** Only offered when Muse TTS is detected; if the first segment fails, report and offer Mode A or C, never switch silently. |
 
 Cross-mode rules:
 - **Narration is finished and user-approved BEFORE `cues.json` is locked** — visual timing
@@ -122,9 +138,11 @@ Cross-mode rules:
 - If mode C fails (key/quota/model unavailable): explain without leaking secrets,
   don't silently switch providers; offer reconfiguration or a version without narration.
 - Music & SFX remain mandatory in all modes — voice-over doesn't replace Phase 6.
+- Mode D follows the same approval rule: narration is finished and user-approved BEFORE cues.json is locked. Mode D segment files are never regenerated after cues lock without re-measuring durations and re-running make_cues.py.
 - `cues.json` stores an optional `voiceover` block (`audioFile`, `wordTimings`, source:
-  `elevenlabs` / `whisperx` / `user-supplied` + source timestamps). Fields may be absent (mode A);
-  if present, Gate D must validate them. Details in `references/05-audio-design.md`.
+  `elevenlabs` / `whisperx` / `user-supplied` / `muse-tts` + source timestamps). Fields may be absent (mode A);
+  if present, Gate D must validate them. For `muse-tts`, `wordTimings` is absent and timing lives in `segmentTimings` (per-segment measured durations) plus phrase-level `captions`.
+  Details in `references/05-audio-design.md`.
 
 ## Anti-slop — style hard lines
 
@@ -142,16 +160,16 @@ Cross-mode rules:
 ## Quick flow (summary; details in each reference)
 
 1. Read the user's brief/references, look for licensed assets → **ask once** (one numbered message
-   with a/b/c options, including the voice-over A/B/C question).
+   with a/b/c options, including the voice-over A/B/C question, plus Mode D when Muse is detected).
 2. Do labeled fact research; build the concept + beat plan + **transition plan** + music plan.
 3. Validate & run `templates/make_cues.py plan.json --out src/cues.json` → `src/cues.json`
    = **THE single source of timing** for the Remotion composition, audio scripts,
    subtitles, and QA. The validator enforces scene cycle & transition-variety rules
    mechanically — fix the plan, don't bypass it.
-4. Set up Remotion (or the HTML+Camoufox+ffmpeg fallback), copy `templates/helpers.tsx`
+4. Set up Remotion (or the HTML+ffmpeg fallback, Plan C in Muse, see references/04 section 5.5), copy `templates/helpers.tsx`
    to `src/helpers.tsx`, write scenes from the motion plan (FPS/dimensions from cues.json).
-5. Audio: music+SFX synthesized from code (numpy/scipy), voice-over per mode A/B/C,
+5. Audio: music+SFX synthesized from code (numpy/scipy), voice-over per mode A/B/C, or Mode D per section 6.6 when selected in Muse,
    loudnorm −14 ±1 LUFS / TP ≤ −1.2 dBFS.
 6. Evidenced 5-gate QA (`qa/report.md` + `qa/checks.json`, status PASS / FAIL /
-   NOT VERIFIED / INVALID) on the **final MP4**.
+   UNVERIFIED / NOT APPLICABLE + reason) on the **final MP4**.
 7. Handoff: MP4 + a report of max 8 lines + an offer of specific revisions.

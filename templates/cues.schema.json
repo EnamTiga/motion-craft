@@ -70,11 +70,11 @@
     "captions": {"type": "array", "description": "frasa/kalimat hasil pengelompokan words; format bebas tapi konsisten"},
     "voiceover": {
       "type": "object",
-      "description": "opsional — hanya mode B/C; absen pada mode A",
+      "description": "opsional — hanya mode B/C/D; absen pada mode A. Untuk muse-tts: wordTimings absen, timing per segmen di segmentTimings.",
       "required": ["source"],
       "properties": {
         "audioFile": {"type": "string"},
-        "source": {"enum": ["elevenlabs", "whisperx", "user-supplied"]},
+        "source": {"enum": ["elevenlabs", "whisperx", "user-supplied", "muse-tts"]},
         "modelId": {"type": "string"},
         "voiceId": {"type": "string"},
         "wordTimings": {
@@ -86,6 +86,20 @@
               "word": {"type": "string"},
               "start": {"type": "number"},
               "end": {"type": "number"}
+            }
+          }
+        },
+        "segmentTimings": {
+          "type": "array",
+          "description": "timing per segmen untuk muse-tts (mode D): durasi tiap segmen diukur dengan ffprobe, offset kumulatif menjadi batas segmen",
+          "items": {
+            "type": "object",
+            "required": ["text", "start", "end"],
+            "properties": {
+              "text": {"type": "string", "minLength": 1},
+              "file": {"type": "string"},
+              "start": {"type": "number", "minimum": 0},
+              "end": {"type": "number", "exclusiveMinimum": 0}
             }
           }
         },

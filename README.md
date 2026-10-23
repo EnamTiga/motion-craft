@@ -3,10 +3,10 @@
 An **After Effects-grade motion graphics video production** skill for coding agents &
 harnesses — an 8-phase pipeline, evidenced 5-gate QA, music & SFX synthesized from code, a single
 source of timing (`cues.json`), optional voice-over (no-narration / user-audio /
-ElevenLabs modes).
+ElevenLabs modes, plus Muse TTS Mode D when running in Muse).
 
 > Install: `npx skills add <repo>/motion-craft` *(or copy this skill folder into your
-> harness's skills directory)*
+> harness's skills directory; in Muse: `~/workspace/custom-skills/motion-craft/`)*
 
 ## Quick install (copy & paste)
 
@@ -25,23 +25,31 @@ Or install it permanently as a skill:
 npx -y skills add EnamTiga/motion-craft -g -y
 ```
 
+In Muse, copy this skill folder into the Muse custom skills directory instead:
+
+```bash
+mkdir -p ~/workspace/custom-skills
+cp -r <folder-skill-ini> ~/workspace/custom-skills/motion-craft
+```
+
 ## Contents
 
 ```
-SKILL.md                    entry: role, absolute rules, phase router, voice-over A/B/C
+SKILL.md                    entry: role, absolute rules, phase router, voice-over A/B/C (+D in Muse)
 references/
   01-brief-and-assets.md    Phase 1 — ask first, visual assets (browser/Camoufox), image quality
   02-facts-and-concept.md   Phases 2–3 — labeled fact research, concept, motion plan, cues.json
   03-motion-standards.md    Phase 4 — AE-grade motion standards, anti-slop, Remotion rules (read-order note at top)
   04-technical-setup.md     Phase 5 — Remotion scaffold, render, fallback
-  05-audio-design.md        Phase 6 — code-synthesized music/SFX, voice-over modes B & C
-  06-qa-gates.md            Phase 7 — evidenced 5-gate QA (A–E) + Phase 8 handoff
+  05-audio-design.md        Phase 6 — code-synthesized music/SFX, voice-over modes B & C, plus mode D (Muse TTS, in Muse)
+  06-qa-gates.md            Phase 7 — evidenced 5-gate QA (A–E)
   07-delivery.md            Phase 8 — delivery & report
   elements-ecosystem.md     external component curation + mandatory adaptation checklist
   anti-patterns.md          pitfalls that have actually happened, ❌/✅ format
 templates/
   helpers.tsx               FPS/ease/spring/fr/scene helpers — utilities, not scene templates
   make_cues.py              plan → validated src/cues.json generator (enforces scene & transition rules)
+  make_audio.py             src/cues.json → synthesized music/SFX generator (writes raw_mix.wav)
   cues.schema.json          the cues.json contract schema
   cues.example.json         a complete cues.json example
 scripts/qa_check.sh         automated QA: metadata, decode, loudness, black/freeze/silence

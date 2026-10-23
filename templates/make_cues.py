@@ -27,6 +27,7 @@ plan.json minimal shape (fields omitted → defaults shown):
                        "connector": "...", "direction": "...", "reason": "...", "sfx": "paper-fold"}],
   "voiceover": {"audioFile": "public/vo.mp3", "source": "whisperx",
                 "wordTimings": [{"word": "Hi", "start": 0.4, "end": 0.7}]},   # optional
+  # muse-tts example: {"audioFile": "public/vo.mp3", "source": "muse-tts", "segmentTimings": [{"text": "Halo", "file": "public/vo-seg-01.mp3", "start": 0.0, "end": 1.2}]}
   "sfx": [{"t": 0.0, "type": "impact", "gain": 0.9}],
   "music": {"bpm": 108, "bars": ["C","G","Am","F"], "final": 18.0}
 }
@@ -120,8 +121,21 @@ def validate(p):
             if w["start"] < last - 0.05:
                 err(f"vo word '{w['word']}': out of order")
             last = w["end"]
-        if vo.get("source") not in ("elevenlabs", "whisperx", "user-supplied"):
+        if vo.get("source") not in ("elevenlabs", "whisperx", "user-supplied", "muse-tts"):
             err(f"vo source '{vo.get('source')}' invalid")
+        if vo.get("source") == "muse-tts" and vo.get("wordTimings"):
+            err("vo muse-tts must not carry wordTimings; use segmentTimings/captions")
+        segs = vo.get("segmentTimings")
+        if segs:
+            last_start = None
+            for seg in segs:
+                if seg["start"] >= seg["end"]:
+                    err(f"vo segment '{seg.get('text', '')}': start >= end")
+                if seg["end"] > dur:
+                    err(f"vo segment '{seg.get('text', '')}': end {seg['end']} > dur {dur}")
+                if last_start is not None and seg["start"] < last_start - 0.05:
+                    err(f"vo segment '{seg.get('text', '')}': out of order")
+                last_start = seg["start"]
 
     m = p.get("music") or err("music missing")
     if m and (not m.get("bpm") or not m.get("bars")):

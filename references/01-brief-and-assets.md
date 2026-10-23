@@ -31,9 +31,22 @@ Exception: the user forbids web search or explicitly requests illustrations only
 user provides images, prioritize their assets; search for supplements only when needed.
 
 **Browser paths (in order):**
-1. **Browser harness tool** (if available) — use it directly.
-2. **None → install Camoufox** (automatic, NO need to ask — installing a technical
-   dependency for an already-requested task is not a decision requiring approval):
+1. **Muse `image-search` CLI (jalur utama di Muse):**
+   `image-search "<query per scene>" --max-results 5 --language <kode>`.
+   Take `media_url` (the full image) and record `page_url` as provenance.
+   Download with curl to `public/`, then run the PIL quality check below as usual.
+2. **Browser harness tool** (if available in another harness) — use it directly.
+3. **Keyless APIs** via curl: Openverse (`api.openverse.org/v1/images/`) or the
+   Wikimedia Commons API → verify & download.
+4. **Camoufox (jalur terakhir, lihat catatan di bawah).**
+5. **All paths fail** → vector illustration for scenes that need it, REPORT in the final report.
+
+**Camoufox (last resort only):** Camoufox hanya dipasang atas persetujuan user,
+hanya bila jalur 1-3 terhalang CAPTCHA berulang pada kebutuhan gambar yang sama,
+dan pemasangannya dilaporkan. Di Muse, Camoufox bukan jalur utama pencarian
+gambar dan bukan fallback render utama. The snippet below is kept only as a
+reference for that last-resort path:
+
    ```bash
    pip install "camoufox[geoip]" && python -m camoufox fetch
    ```
@@ -45,10 +58,7 @@ user provides images, prioritize their assets; search for supplements only when 
        # grab thumbnails → open the full-resolution page/media URL → download (requests/curl)
    ```
    Camoufox is chosen for: anti-fingerprinting (image search doesn't quickly hit CAPTCHA),
-   Playwright API, and reuse for the render fallback (Phase 5.5).
-3. **Install fails** (network/permissions) → keyless APIs via curl: Openverse
-   (`api.openverse.org/v1/images/`) or the Wikimedia Commons API → verify & download.
-4. **All paths fail** → vector illustration for scenes that need it, REPORT in the final report.
+   Playwright API, and reuse for the render fallback (Phase 5.5, Plan C in Muse).
 
 **Asset count & variety follow each scene's needs**, not one image for the whole video.
 Build a per-scene visual requirements list from the motion plan before searching.
@@ -70,11 +80,28 @@ report it; use vector illustration, not an irrelevant photo.
   people/events as substitutes. Don't remove watermarks or bypass paywalls.
 
 **Record `assets.json`** (concise): `scene → source_url → changes made`.
+For every asset, record its origin kind in assets.json: `image-search`, `openverse`, `wikimedia`, `browser`, `camoufox`, `muse-generated`, or `user-supplied`, next to the source_url.
 Useful for QA Gate A and revisions.
 
 **Integration into choreography:** download to `public/`, check quality, then integrate into
 the animation (crop, mask reveal, parallax, pan/zoom with easing). Don't let it become a
 static photo slideshow. Photos must participate in the choreography (see Phase 4.1a).
+
+## 1a-3. Muse generated images (complement only)
+
+- Muse generated images are a **complement**, not a replacement for searched
+  photos of real subjects (real people, products, real places). For real
+  subjects, generated images are FORBIDDEN as visual evidence.
+- Legitimate uses: abstract backgrounds, textures, concept illustrations, and
+  visual props that do not claim to depict a real subject.
+- Limit: maximum **4** images per chat request. Needs beyond 4 are planned per
+  batch and reported, never promised all at once.
+- Record every generated asset in `assets.json` with `source_url` set to the
+  marker `muse-generated` plus a brief prompt summary, so Gate A can tell it
+  apart from searched photos.
+- The technical quality rules of 1a-2 (sharpness, watermarks, cropped subjects)
+  still apply to downloads; for generated images, anatomical defects or garbled
+  text in the image are reject reasons.
 
 ## 1b. Send this ONE question message (adapt, drop what's already answered)
 
@@ -97,13 +124,14 @@ Before I build, answer briefly (anything can be "up to you"):
 8. Visual assets (ask only if needed): a) your images  b) licensed internet images + illustrations  c) illustrations only  d) up to you. If there are no reference images from you, the default is that I search licensed internet images to use in the video.
 9. Music: a) energetic/epic  b) cheerful  c) chill/lofi  d) dramatic. SFX: a) dense  b) moderate  c) minimal
 10. On-screen text: language? Any CTA at the end (provide its text)? Anything that must not appear?
-11. Voice-over? a) Yes, create with the ElevenLabs API (mode C)  b) No (mode A)  c) Use audio I send (mode B)  d) Up to you.
+11. Voice-over? a) Yes, create with the ElevenLabs API (mode C)  b) No (mode A)  c) Use audio I send (mode B)  d) Use Muse narration (mode D, only if offered in Muse)  e) Up to you.
 ```
 
 Question 11 is the **voice-over mode selection** (see SKILL.md). Mode C: ask for language,
 voice character, `model_id`, and `voice_id` (or offer to help pick from the official
 API/documentation). Mode B: ask for the audio (and timestamps if available). Don't ask for
 API keys in this form; handle credential delivery in Phase 6.
+Offer option d ONLY when Muse is detected per SKILL.md; never print option d in other harnesses. Mode D: ask language and voice character only; there is no model_id, voice_id, or API key to ask for.
 
 ## 1c. After the user answers
 

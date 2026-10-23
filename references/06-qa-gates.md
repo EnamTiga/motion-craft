@@ -106,8 +106,9 @@ the target specification, tool configuration, and a table:
 
 ## 7.5 Gate D — narration, subtitles, and synchronization
 
-Gate D applies only if `cues.json` has a `voiceover` block (modes B/C); without it, record
+Gate D applies only if `cues.json` has a `voiceover` block (modes B/C/D); without it, record
 "not applicable + reason" and move on to Gate E.
+For mode D (muse-tts), the per-word highlight target below is NOT APPLICABLE; verify segment-boundary sync against segmentTimings and phrase subtitle timing instead.
 
 - Compare the final audio to the source audio: all content, order, and pace preserved
   unless changes were approved; no double playback, drift, missing pauses, or clipped first/last
@@ -164,22 +165,5 @@ Gate D applies only if `cues.json` has a `voiceover` block (modes B/C); without 
 
 ---
 
-# PHASE 8 — DELIVERY
-
-1. Save the MP4 with a clear name to an output directory that actually exists and
-   persists in the current environment. Use the harness's available file presentation
-   tool (e.g. `present_file`), don't assume a specific path or tool always exists.
-   Deliver the file whose hash matches the final QA report; if the user asks for code,
-   include a project zip without credentials/dependency caches.
-2. End the message with text, **a concise report of max 8 lines**:
-   - concept & scene flow
-   - specification (resolution, fps, duration, music BPM)
-   - data sources + labels used
-   - assumptions you made
-   - facts not found / demo numbers / things that **need verification**
-   - QA status (pass/partial/draft), the actual checking methods, and specific remaining
-     limitations
-   - specific revision offers (e.g. "change the palette", "add scene X", "bump to 60 fps")
-3. Revisions from the user: change **only what was requested** (edit the relevant files, re-render,
-   re-QA that portion). Don't rebuild from scratch unless asked. After changing timing, re-run
-   `make_cues.py` and `make_audio.py` so the sound stays in sync.
+Phase 8: see `references/07-delivery.md`. Delivery is owned and specified in full by that file;
+it is not duplicated here.
