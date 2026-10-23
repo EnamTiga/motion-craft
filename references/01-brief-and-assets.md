@@ -20,6 +20,19 @@
   or ask the user.
   **Copy the style only. Do not copy content, characters, logos, or copyrighted assets
   belonging to others.**
+
+### Measured reference blueprint (required when a reference video exists)
+
+A style summary is not enough. When the user provides a reference video, or one is selected from a named source (section 1a-4), measure it and write the artifact `reference-blueprint.md` in the project folder before the concept is locked. Start from `templates/reference-blueprint.md`; do not invent a new layout for it.
+
+Rules:
+
+- One row per shot. Shot boundaries come from scene detection plus manual correction against the extracted frames. A boundary that was not checked against frames says so in its measurement source column.
+- Every number carries its measurement source, one of: `ffprobe`, `ffmpeg-scene-detect`, `frame-inspection`, `manual-correction`, or `source-plate` for a number reported by the source site and not re-measured. Never present a `source-plate` number as an own measurement.
+- The header records the format card: duration, resolution, frame rate, aspect ratio, shot count, median shot duration, cuts per minute, estimated BPM with its estimation method, and, when the audio was measured, integrated loudness and true peak.
+- The blueprint feeds Phase 3: its rhythm numbers (median shot duration, cuts per minute, and the beat grid when measured) are copied into the beat plan, and the blueprint path is recorded in the concept summary. An impression that is not in the blueprint does not enter the plan.
+- Copy the method, never the footage, the content, the characters, or the logos (see the reference rule above).
+
 - Don't ask about things already clear from the brief or references. Write those as
   **assumptions** in the summary.
 
@@ -103,6 +116,28 @@ static photo slideshow. Photos must participate in the choreography (see Phase 4
   still apply to downloads; for generated images, anatomical defects or garbled
   text in the image are reject reasons.
 
+## 1a-4. Named reference sources (prompts and measured examples)
+
+When the brief has no reference yet, or a chosen direction needs a proven rhythm, look at these two sources before the concept is locked. They are the only prompt galleries named by this skill. Other galleries are not named on purpose: unverified mirrors and duplicates of the same pool add no evidence.
+
+1. **motion-graphics.org**: a small curated gallery (85 videos, checked 2026-10-23) with dated per-entry statistics and an honest per-entry label stating whether a prompt was shared. Use it as the entry point when picking a reference.
+2. **prompt-motion.com**: a large gallery of results with verbatim creator prompts. Use it as the raw pool once a direction is chosen.
+
+**Hard filter for prompts.** Most gallery prompts are one sentence long and carry no buildable information. A prompt from any source may be used as build input only when all three hold:
+
+- the full prompt text is at least 500 characters long,
+- it contains at least one measured number (a duration, a BPM, a frame rate, a resolution, a loudness value, a pixel size),
+- it contains a timing or structure breakdown (named sections, a beat list, or a second-by-second plan).
+
+A prompt that fails any point is ignored as build input. It may still be recorded in the reference blueprint as visual inspiration, with its URL and nothing more. Duplicate copies of the same prompt across entries or sites count once. The 500 character threshold is deliberate: the one-sentence prompts that dominate the galleries (about 150 characters, of the "go all out" kind) fall under it, and the structured prompts that carry a beat grid and a build spec (several thousand characters) pass it.
+
+**Trust labels.** Every prompt or recipe taken from a source is labeled, in the reference blueprint header and again in the concept summary:
+
+- Prompt kind: `original-prompt` (the verbatim text published by the creator) or `reproduction-recipe` (a reconstruction written by someone else).
+- Verification status: `verified` (you opened the source page during this project and saw the prompt next to its result video) or `unverified` (seen only in an index, a FAQ, or a second-hand quote).
+
+An unverified reproduction recipe never overrides a measured blueprint or a rule in this skill. Extract patterns and structure only: prompts belong to their creators, so do not copy a prompt verbatim into a commercial production.
+
 ## 1b. Send this ONE question message (adapt, drop what's already answered)
 
 Format: numbered, each question has short (lettered) options so the user can answer
@@ -143,4 +178,4 @@ Offer option d ONLY when Muse is detected per SKILL.md; never print option d in 
 - Write a **5–8 line concept summary** (main visual metaphor, scene flow, climax moment,
   palette, music tempo) and **immediately proceed to building without waiting for approval**, unless
   something important is genuinely missing. Ask again only when stuck, and only one
-  question.
+  question. For a launch or product film brief, compare the duration and the ending against the corpus benchmarks in `references/08-format-archetypes.md` and show that comparison in the summary.

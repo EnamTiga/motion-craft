@@ -32,7 +32,13 @@
   data.
 - **Rhythm:** key movements follow the narration's meaning/timestamps; use the music beat
   when it doesn't conflict. Hook ≤ 2.5s; frame 0 already shows the hook word; no static
-  frame > 0.5s.
+  frame > 0.5s. The beat grid itself is set in the plan (Phase 3, section 3.2b); this section governs how motion uses it.
+- **Style exception: sparse hook and off-beat boundaries (showreel and wordless formats only).** For a showreel, a teaser, or a wordless motion-design piece, the hook may be sparse instead of a word at frame 0: one focal object on a quiet or near-black field, building tension. This exception is a deliberate style choice, never a default, and it holds only when all four are true:
+  1. a single focal object or mark is visible from frame 0 (a completely empty or fully black frame is still a bug),
+  2. the first visual event (a whip, a transform, a reveal) is scheduled at or before 2.0 seconds,
+  3. the video ends on a brand name end card,
+  4. the choice and its numbers are recorded in the plan as `styleExceptions` (Phase 3, section 3.2) before cues are generated.
+  Under the same exception, scene boundaries may sit deliberately off the beat grid against a stable music bed, for surprise. Each off-beat boundary is listed in the beat grid mapping with its reason (section 3.2b). Narrated videos, product ads, and explainers keep the standard hook rule, with no exception.
 - **Readability:** key text stays fully visible ≥ 0.35s + 0.15s per word; text size
   ≥ 40 px in portrait; high contrast; portrait safe zones: x 60–1020, y 180–1650
   (avoid platform UI overlays).

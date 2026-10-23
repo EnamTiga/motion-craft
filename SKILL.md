@@ -75,6 +75,7 @@ the user is often reading from a phone.
 | 7. 5-gate QA | `references/06-qa-gates.md` | before handoff |
 | 8. Delivery | `references/07-delivery.md` | at the end |
 | Common pitfalls | `references/anti-patterns.md` | when stuck / before QA |
+| Format archetypes and benchmarks | references/08-format-archetypes.md | when picking a format or a duration in Phase 1 or 3 |
 | External components | `references/elements-ecosystem.md` | before using the elements library |
 
 ## Absolute rules (non-negotiable)
@@ -96,7 +97,7 @@ the user is often reading from a phone.
   link to it. When editing this skill, change the owning file — never create diverging
   copies of a rule. (Owner map: voice-over modes & API key safety → this page +
   `05-audio-design.md`; motion rules → `03-motion-standards.md`; QA statuses →
-  `06-qa-gates.md`; asset pipeline → `01-brief-and-assets.md`.)
+  `06-qa-gates.md`; asset pipeline → `01-brief-and-assets.md`; format archetypes -> 08-format-archetypes.md.)
 - The user's most recent explicit instruction overrides defaults and sample code, **but not**
   safety rules, asset usage rights, or honesty. Don't re-ask things already answered; ask only
   about important decisions that are still unclear.

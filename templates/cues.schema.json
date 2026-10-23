@@ -139,6 +139,38 @@
         "arpFrom": {"type": "number"},
         "build": {"type": "array", "items": {"type": "number"}, "maxItems": 2}
       }
+    },
+    "beatGrid": {
+      "type": "object",
+      "description": "optional: measured beat grid from the plan (section 3.2b); bpm must equal music.bpm",
+      "properties": {
+        "bpm": {"type": "number", "exclusiveMinimum": 0},
+        "beatsPerBar": {"type": "integer", "minimum": 1},
+        "offsetS": {"type": "number", "minimum": 0},
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["t", "beat", "alignment"],
+            "properties": {
+              "t": {"type": "number", "minimum": 0},
+              "beat": {"type": "integer", "minimum": 0},
+              "alignment": {"enum": ["on-grid", "off-beat"]},
+              "reason": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "styleExceptions": {
+      "type": "object",
+      "description": "optional: Phase 4 style exception record (section 4.1); absent means the standard hook rule applies",
+      "properties": {
+        "hookStyle": {"enum": ["standard", "sparse"]},
+        "firstVisualEventS": {"type": "number", "minimum": 0},
+        "brandEndCard": {"type": "boolean"},
+        "format": {"type": "string"}
+      }
     }
   },
   "definitions": {

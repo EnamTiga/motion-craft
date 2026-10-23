@@ -37,6 +37,7 @@
    build backwards from there.
 5. One video = one new concept. If it resembles another video in the conversation, change
    the metaphor.
+6. **Format archetype.** Pick the archetype that matches the brief from `references/08-format-archetypes.md` and record its name in the concept summary, together with the trust labels of any source prompt used (section 1a-4). Archetype first, free concept second; starting points, not hard rules.
 
 ## 3.2 Default scene structure (15–21s)
 
@@ -54,6 +55,8 @@ Without narration, try to land scene boundaries/accents on beats when it support
 message. With narration, prioritize phrases, pauses, and speech timestamps; the musical
 arrangement follows the narration. The music beat is not a reason to shift subtitles or
 cut words short.
+
+Style exceptions (Phase 4, section 4.1) are recorded in the plan and copied into `cues.json` as `styleExceptions`, for example: `{"hookStyle": "sparse", "firstVisualEventS": 1.77, "brandEndCard": true, "format": "showreel"}`. An absent `styleExceptions` block means no exception was taken. Gate B checks the recorded numbers (first event time, end card) like any other plan value.
 
 ## 3.2a Motion plan per scene — required before writing animation
 
@@ -73,6 +76,29 @@ Build an internal table read during implementation and QA:
 - If there is a voice-over, keep the already-valid subtitle timestamps; design illustration
   motion around that timing. Karaoke subtitles are not a substitute for scene animation.
 
+### Beat plan checklist (five pillars, checked before cues are generated)
+
+A beat plan is complete only when all five pillars are written down. Each pillar names where it lives in this pipeline, so nothing is written twice.
+
+- [ ] **Role and point of view:** who is speaking or showing, and to whom (concept recipe, section 3.1).
+- [ ] **Technical context:** the stack (Remotion, or the Phase 5 fallback), frame rate, resolution, and aspect ratio (the cues header fields).
+- [ ] **Duration and timing frame:** total duration, scene boundaries, and the beat grid (section 3.2b).
+- [ ] **Second-by-second decoupage:** the breakdown table below, covering the full duration with no gaps.
+- [ ] **Palette and easing precision:** palette values as hex, and the easing or spring choice per main action, never the words "smooth" or "nice" on their own (Phase 4, sections 4.1 and 4.6).
+
+The decoupage is a table with one row per interval. Rows may span 1 to 3 seconds (for example 0-2s, 2-5s, 5-8s). Columns: `interval`, `visual event`, `on-screen text`, `sound cue`. The decoupage is the per-second view of the same plan: when it disagrees with the scene table or with cues, the scene table and cues win and the decoupage is fixed, never the other way round.
+
+Also write the banned list for this video in the concept summary: the generic effects that would break its concept (for example particle bursts, glows, lens flares, camera shake) are named before building and checked again at Gate B.
+
+## 3.2b Beat grid: tempo is set in the plan, events are mapped per beat
+
+The music tempo is a plan decision, not a render-time discovery.
+
+- Set the grid in the plan before `make_cues.py` runs: `bpm` (the same value as `music.bpm`), `beatsPerBar` (default 4), and `offsetS` (the time of the first downbeat, default 0). Beat duration is `60 / bpm` seconds. Beat `n` starts at `offsetS + n * (60 / bpm)`.
+- Map every scene boundary and every main action cue to the grid. For each mapped event record its time `t`, its nearest beat index `beat`, and its `alignment`: `on-grid` when the event time is within one frame (`1 / fps`) of the beat time, otherwise `off-beat`.
+- An `off-beat` event is allowed only as a deliberate choice and must carry a `reason` in the plan (see the style exception rule in Phase 4, section 4.1). Accidental drift is a plan bug, not an off-beat choice.
+- With narration, the grid is descriptive: boundaries and cues follow the narration timestamps, never the other way round (section 3.2 rule, unchanged). In that case the honest reason for an off-beat event is that it follows narration timing.
+
 ## 3.3 `make_cues.py` — the ONLY place timing numbers are written
 
 Write this script, run it; it produces `src/cues.json` read by **both the Remotion
@@ -87,6 +113,8 @@ write raw second values in two places.
 - `transition_plan`: one entry per boundary, containing mechanism type, duration, connecting
   object, direction, reason, and SFX cue. Don't generate an identical list of whoosh/thud
   events automatically.
+- `beatGrid`: `{bpm, beatsPerBar, offsetS}` plus one mapping entry per scene boundary and main action cue: `{t, beat, alignment}`, where `alignment` is `on-grid` or `off-beat`; `off-beat` entries also carry `reason`. `make_cues.py` copies the block into `cues.json` unchanged, so the composition, the audio scripts, and QA all read the same grid (section 3.2b).
+- `styleExceptions` (optional): `{hookStyle: "sparse", firstVisualEventS, brandEndCard, format}` when the Phase 4 style exception is taken. Absent means the standard hook rule applies.
 - `words` / `captions`: valid alignment results, including clip placement offset if any;
   keep the source timestamps so they remain traceable.
 - `voiceover` (optional — mode B/C): `audioFile`, `source` (`elevenlabs` / `whisperx` /

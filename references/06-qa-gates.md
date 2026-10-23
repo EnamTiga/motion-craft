@@ -74,6 +74,7 @@ the target specification, tool configuration, and a table:
 - Render stills at frame 0, peak motion/overshoot, after the entrance, each major action,
   and just before the exit **for every scene**. Also check the moment all elements have reached
   their final positions, not just on entry.
+- **Frame per beat check (required when `cues.json` carries a `beatGrid`, section 3.2b).** Before the full render, extract the frame at every beat time in the grid (the nearest frame to `offsetS + n * (60 / bpm)`, from beat 0 to the last beat at or before the duration). On each beat frame check three things: the event mapped to that beat is visible or in progress, the frame is not an unintended blank, and there is no single-frame pop (a frame that differs sharply from both neighbours, as a guide a frame-difference spike of about 3x its neighbours, while matching neither the incoming nor the outgoing state). A flagged pop is investigated like any other Gate B finding, not auto-failed on the number alone. Record the result in `qa/checks.json` under `gateB.framePerBeat`, exactly this shape: `{"status": "PASS", "beatsChecked": 33, "beatsTotal": 33, "popsFlagged": [{"beat": 14, "tS": 7.78, "note": "checked, intentional whip frame"}]}`. With no `beatGrid`, record status NOT APPLICABLE with the reason.
 - For **every transition**, capture a before–during–after sequence around the boundary: e.g.
   b−0.3 s to b+0.3 s at intervals ≤0.05 s; extend if the transition is longer. Convert
   via the project FPS and clamp to the valid range. Check handoff continuity, direction,
@@ -272,6 +273,37 @@ color: it is a named sub-check with a named listener, named excerpts, and a writ
    is still unverified, report it as partial QA/draft per 7.1. The concise user report
    states status, methods, key evidence, and limitations; details live in
    `qa/report.md`.
+
+## 7.8 Comparative QA against the reference blueprint (optional supplement to Gate C)
+
+This check runs only when the project has a `reference-blueprint.md` (Phase 1). Without a blueprint, record the block below with status NOT APPLICABLE and the reason "no reference blueprint", and move on.
+
+Method: compare the final MP4 against the blueprint numbers, per corresponding scene: the measured scene duration in the render against the reference shot or shot group it answers to, the cuts per minute of both, and the integrated loudness and true peak of both.
+
+Record the result in `qa/checks.json` under `gateC.referenceComparison`, exactly this shape:
+
+```json
+"referenceComparison": {
+  "status": "PASS",
+  "blueprintPath": "reference-blueprint.md",
+  "scenesCompared": 6,
+  "maxAbsSceneDeviationS": 0.42,
+  "medianAbsSceneDeviationS": 0.18,
+  "perScene": [
+    {"scene": 1, "refDurationS": 3.50, "renderDurationS": 3.40, "deviationS": -0.10, "deviationPct": -2.9}
+  ],
+  "cutsPerMinute": {"reference": 16.0, "render": 17.6, "delta": 1.6},
+  "loudness": {"referenceLUFS": -12.4, "renderLUFS": -14.0, "deltaLU": -1.6, "referenceTruePeakDBTP": -0.6, "renderTruePeakDBTP": -1.3},
+  "notes": "scene 4 runs 0.42 s under the reference hold; accepted, message timing unchanged"
+}
+```
+
+Rules:
+
+- `status` uses the same vocabulary as every other check: PASS, FAIL, UNVERIFIED, or NOT APPLICABLE plus a reason recorded in `notes`. One `perScene` entry per compared scene; `deviationS` is render minus reference, and `deviationPct` is `deviationS` as a percentage of the reference duration.
+- A scene whose absolute deviation is larger than the greater of 0.5 s or 20 percent of its reference duration must be named in `notes`, with the reason it is accepted or the fix that follows.
+- The loudness block is descriptive. A reference master can be hotter than this skill allows (see section 7.6 and `references/08-format-archetypes.md`); matching the reference loudness is never a reason to change the Gate E verdict.
+- **This supplement is report-only. It never changes a gate status.** A FAIL in any gate stays FAIL even when the render matches its reference closely, and a PASS here never offsets a failure anywhere else. The absolute gates in sections 7.2 to 7.7 are the only verdicts.
 
 ---
 

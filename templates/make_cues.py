@@ -140,6 +140,27 @@ def validate(p):
     m = p.get("music") or err("music missing")
     if m and (not m.get("bpm") or not m.get("bars")):
         err("music needs bpm + bars")
+
+    # beat grid: optional; when present it must agree with the music tempo
+    bg = p.get("beatGrid")
+    if bg:
+        if bg.get("bpm") != (p.get("music") or {}).get("bpm"):
+            err("beatGrid.bpm must equal music.bpm")
+        last_beat = -1
+        for e in bg.get("events", []):
+            if e.get("alignment") == "off-beat" and not e.get("reason"):
+                err("beatGrid off-beat event needs a reason")
+            if e.get("beat", 0) < last_beat:
+                err("beatGrid events out of order")
+            last_beat = e.get("beat", last_beat)
+
+    # style exceptions: optional; a sparse hook must carry its evidence numbers
+    se = p.get("styleExceptions")
+    if se and se.get("hookStyle") == "sparse":
+        if se.get("firstVisualEventS") is None or se["firstVisualEventS"] > 2.0:
+            err("styleExceptions sparse hook needs firstVisualEventS <= 2.0")
+        if se.get("brandEndCard") is not True:
+            err("styleExceptions sparse hook needs brandEndCard true")
     return p
 
 

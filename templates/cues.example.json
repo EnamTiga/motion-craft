@@ -117,5 +117,27 @@
     "hatFrom": 3.0,
     "arpFrom": 7.0,
     "build": [13.0, 14.2]
+  },
+  "beatGrid": {
+    "bpm": 108,
+    "beatsPerBar": 4,
+    "offsetS": 0,
+    "events": [
+      {"t": 0.0, "beat": 0, "alignment": "on-grid"},
+      {"t": 1.2, "beat": 2, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 2.6, "beat": 5, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 3.4, "beat": 6, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 4.3, "beat": 8, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 6.3, "beat": 11, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 7.0, "beat": 13, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 7.8, "beat": 14, "alignment": "on-grid"},
+      {"t": 9.9, "beat": 18, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 10.6, "beat": 19, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 11.5, "beat": 21, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 13.0, "beat": 23, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 14.2, "beat": 26, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 15.2, "beat": 27, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"},
+      {"t": 16.6, "beat": 30, "alignment": "off-beat", "reason": "follows narration timing (section 3.2)"}
+    ]
   }
 }
