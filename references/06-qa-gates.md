@@ -155,6 +155,60 @@ For mode D (muse-tts), the per-word highlight target below is NOT APPLICABLE; ve
   silence. Don't assume an AAC audio stream means music and SFX made it in.
 - Check the ducking envelope during narration and the music's return in pauses; no excessive
   pumping, edit clicks, distortion, clipping, abrupt endings, or unplanned hum. Silence detection needs context: intentional narration pauses are not bugs.
+
+**Voice balance check (measured, mandatory when the production has narration).**
+Total loudness passing says nothing about balance: a mix can measure −14 LUFS
+while the narration sits far below the music. (Measured incident, 2026-10-23:
+a shipped demo measured −14.0 LUFS total while its VO stem sat 16–19 LU below
+the music/SFX bed in every narration segment; the total was practically the
+bed alone. The project owner heard it; no gate had measured it.)
+
+- **Method — companion renders.** Render the narration stem and the bed stem
+  (music + SFX) separately, each through the *same* mix chain and the *same*
+  final gain/limiter as the final mix, with the other stem omitted. Measure
+  integrated loudness (ebur128 or loudnorm) of each companion **per narration
+  segment window**, using the segment boundaries from `cues.json`
+  (`voiceover.segmentTimings` for Mode D, the equivalent narration timings for
+  modes B/C). Per segment: `diffLU = LUFS(VO companion) − LUFS(bed companion)`.
+  A gain applied identically to both companions cancels in the difference;
+  never re-normalize the companions individually (a per-file dynamic
+  normalization, e.g. a loudnorm pass that falls back to dynamic mode,
+  destroys the evidence — if the finalize chain normalizes per file, measure
+  the companions at the pre-finalize stage under the common gain and say so).
+- **Cut windows inside the filtergraph** (`atrim=start=…:end=…` + `asetpts`),
+  or extract each segment to its own file first and measure the extracted
+  files. Do **not** measure a window by combining `-ss`/`-t` with a single
+  ebur128 pass: on the ffmpeg build used for the 2026-10-23 repair that
+  combination measured a different, louder window (same segment read
+  −34.1 LUFS via atrim/decode-extraction but −28.2 LUFS via `-ss`/`-t`).
+- **Threshold: every narration segment must measure diffLU ≥ +8.** The minimum
+  per-segment difference is the headline number of this check. Below +8 in
+  any segment is a Gate E FAIL (major: narration covered), fixed by raising
+  the narration and/or lowering the bed under narration (static gain and/or
+  stronger sidechain ducking), then re-measured on the new mix.
+- **Record in `qa/checks.json`** under `gateE.voiceBalance`, exactly this shape:
+
+  ```json
+  "voiceBalance": {
+    "status": "PASS",
+    "method": "companion renders via identical chain, ebur128 per segmentTimings window, atrim-cut",
+    "thresholdLU": 8,
+    "minDiffLU": 10.6,
+    "perSegment": [
+      {"seg": 1, "start": 0.0, "end": 3.72, "voLUFS": -14.2, "bedLUFS": -24.8, "diffLU": 10.6}
+    ]
+  }
+  ```
+
+  One `perSegment` entry per narration segment. Keep the companion files
+  (e.g. `qa/balance/vo_in_mix.wav` and `qa/balance/bed_in_mix.wav`) so the
+  reviewer can re-measure independently; a reviewer re-measurement that does
+  not reproduce the builder's numbers within ~0.5 LU invalidates the record.
+- A production **with** narration but **no** `voiceBalance` record counts as
+  Gate E not passed, whatever the total loudness says. With no narration
+  (Mode A), record `"voiceBalance": {"status": "NOT APPLICABLE", "reason": "no narration"}`
+  and move on. `templates/make_audio.py` carries a `voice_balance()` helper
+  implementing this measurement.
 - If listening/playback capability is available, listen to the final result at normal level:
   word clarity, music not covering narration, SFX not piercing, channel balance/mono,
   and mood changes matching scenes. LUFS measurement alone **does not prove**

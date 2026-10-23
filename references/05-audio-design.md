@@ -72,6 +72,13 @@ ffmpeg -nostats -i public/mix.wav -af ebur128=peak=true -f null - 2>&1 | grep -E
 Target `I:` between −15 and −13 LUFS, `Peak:` ≤ −1.2 dBFS. If outside the target, repeat
 loudnorm or adjust with `-af volume=XdB`.
 
+If the production has narration, the mix must also pass the measured
+voice-balance check defined in Gate E (`references/06-qa-gates.md`, section
+7.6): narration at least +8 LU above the music/SFX bed in every narration
+segment, measured on companion renders. Total loudness on target does not
+prove the narration is audible over the bed; design the narration gain and
+the ducking for that threshold, not just for the total.
+
 Add new SFX types if the concept needs them (e.g. click, knock, water, typewriter): write
 small functions with a swept sine + noise + exponential envelope, and add them to the SFX dispatch block in `templates/make_audio.py`.
 Every scene must feel and sound different, while remaining one sound family.

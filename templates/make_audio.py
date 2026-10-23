@@ -7,7 +7,11 @@ structure, and SFX dispatch to match your new music/transition plan. If a functi
 does not support a cue you chose, implement it first; do not replace all cues with
 whooshes just because that is all that is available. Keep the music, SFX, and
 narration stems for QA. If there is narration, add the narration stem and ducking
-to the final mix; this instrumental example does not do that automatically.
+to the final mix; this instrumental example does not do that automatically. With
+narration, Gate E also requires the measured voice-balance check (see
+voice_balance() below and references/06-qa-gates.md section 7.6): keep companion
+renders of the narration stem and the bed stem through the final chain so the
+balance can be measured per narration segment.
 
 Usage:
     python3 make_audio.py [--no-finalize]
@@ -181,6 +185,42 @@ print('audio ok', n / SR, 'seconds')
 # stage or raise its limit without re-measuring the final MP4 per Gate E.
 LOUDNORM_TARGET = 'I=-14:TP=-1.5:LRA=11'
 LIMITER = 'alimiter=limit=0.72:level=false'
+
+# ---- voice balance measurement (Gate E, references/06-qa-gates.md section 7.6)
+# When a production adds narration on top of this instrumental example, Gate E
+# requires a MEASURED voice balance: per narration segment, the narration stem
+# must sit at least +8 LU above the music/SFX bed, measured on companion
+# renders (each stem rendered through the same mix chain and the same final
+# gain, the other stem omitted). Total loudness alone does not prove balance.
+# Windows are cut with atrim inside the filtergraph on purpose: combining
+# -ss/-t with a single ebur128 pass measured a different, louder window on
+# the ffmpeg build verified 2026-10-23 (-34.1 LUFS via atrim/extraction vs
+# -28.2 LUFS via -ss/-t for the same segment). Do not "simplify" this back.
+import re as _re
+
+def _ebur128_window(path, start, end):
+    af = 'ebur128=peak=true'
+    if start is not None:
+        af = f'atrim=start={start}:end={end},asetpts=PTS-STARTPTS,ebur128=peak=true'
+    r = subprocess.run(['ffmpeg', '-nostats', '-i', path, '-af', af, '-f', 'null', '-'],
+                       capture_output=True, text=True)
+    vals = _re.findall(r'I:\s+(-?[\d.]+)\s+LUFS', r.stderr)
+    return float(vals[-1]) if vals else None
+
+def voice_balance(vo_companion, bed_companion, segments):
+    """segments: list of (start, end) in seconds, from cues.json narration
+    timings (voiceover.segmentTimings for Mode D). vo_companion/bed_companion:
+    WAV renders of each stem through the identical final chain/gain.
+    Returns (rows, min_diff_LU); Gate E passes when min_diff_LU >= 8."""
+    rows = []
+    for i, (s, e) in enumerate(segments):
+        vo = _ebur128_window(vo_companion, s, e)
+        bed = _ebur128_window(bed_companion, s, e)
+        rows.append({'seg': i + 1, 'start': s, 'end': e,
+                     'voLUFS': vo, 'bedLUFS': bed,
+                     'diffLU': None if (vo is None or bed is None) else round(vo - bed, 1)})
+    diffs = [r['diffLU'] for r in rows if r['diffLU'] is not None]
+    return rows, (min(diffs) if diffs else None)
 
 def _loudnorm_measure(path):
     r = subprocess.run(['ffmpeg', '-i', path, '-af',
