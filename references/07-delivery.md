@@ -17,7 +17,7 @@ End the message with:
 
 - concept & scene flow
 - specification (resolution, fps, duration, music BPM)
-- voice-over mode and source, when narration is used (e.g. "voice-over: Mode D, muse-tts, subtitle level frasa, tanpa highlight per kata")
+- voice-over mode and source, when narration is used (e.g. "voice-over: Mode D, muse-tts, phrase-level subtitles, no per-word highlight")
 - data sources + labels used
 - assumptions you made
 - facts not found / demo numbers / things that **need verification**

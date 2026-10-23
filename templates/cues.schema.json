@@ -1,18 +1,18 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "motion-craft cues",
-  "description": "Kontrak sumber timing tunggal untuk komposisi Remotion, skrip audio, subtitle, dan QA.",
+  "description": "Single source of timing contract for the Remotion composition, audio scripts, subtitles, and QA.",
   "type": "object",
   "required": ["fps", "width", "height", "dur", "frames", "bounds", "scenes", "transition_plan", "sfx", "music"],
   "properties": {
     "fps": {"type": "number", "exclusiveMinimum": 0},
     "width": {"type": "integer", "exclusiveMinimum": 0},
     "height": {"type": "integer", "exclusiveMinimum": 0},
-    "dur": {"type": "number", "exclusiveMinimum": 0, "description": "durasi total dalam detik, mencakup audio utuh"},
+    "dur": {"type": "number", "exclusiveMinimum": 0, "description": "total duration in seconds, covering the full audio"},
     "frames": {"type": "integer", "exclusiveMinimum": 0, "description": "ceil(dur * fps)"},
     "bounds": {
       "type": "array",
-      "description": "batas scene dalam detik (naik, mulai 0, berakhir ~dur)",
+      "description": "scene boundaries in seconds (ascending, starting at 0, ending at ~dur)",
       "items": {"type": "number", "minimum": 0}
     },
     "scenes": {
@@ -28,26 +28,26 @@
           "entrance": {"$ref": "#/definitions/cue"},
           "mainActions": {
             "type": "array",
-            "description": "minimal 2 beat aksi setelah entrance untuk scene >= 3 detik; minimal 1 untuk scene pendek",
+            "description": "at least 2 action beats after the entrance for scenes >= 3 seconds; at least 1 for short scenes",
             "items": {"$ref": "#/definitions/cue"}
           },
           "continueAction": {"$ref": "#/definitions/cue"},
           "exit": {"$ref": "#/definitions/cue"},
-          "handoff": {"type": "string", "description": "objek/arah penghubung ke scene berikutnya"}
+          "handoff": {"type": "string", "description": "connecting object/direction to the next scene"}
         }
       }
     },
     "transition_plan": {
       "type": "array",
-      "description": "satu entri per batas antar scene",
+      "description": "one entry per scene boundary",
       "items": {
         "type": "object",
         "required": ["at", "mechanism", "reason"],
         "properties": {
           "at": {"type": "number", "minimum": 0},
-          "mechanism": {"type": "string", "description": "handoff | match-cut | morph | layout-shift | camera-move | iris | wipe | occlusion — tidak boleh identik pada dua batas berturut-turut"},
+          "mechanism": {"type": "string", "description": "handoff | match-cut | morph | layout-shift | camera-move | iris | wipe | occlusion: must not be identical on two consecutive boundaries"},
           "duration": {"type": "number", "exclusiveMinimum": 0},
-          "connector": {"type": "string", "description": "objek penghubung"},
+          "connector": {"type": "string", "description": "connecting object"},
           "direction": {"type": "string"},
           "reason": {"type": "string"},
           "sfx": {"type": "string"}
@@ -56,7 +56,7 @@
     },
     "words": {
       "type": "array",
-      "description": "hasil alignment valid (word timings)",
+      "description": "valid alignment result (word timings)",
       "items": {
         "type": "object",
         "required": ["word", "start", "end"],
@@ -67,10 +67,10 @@
         }
       }
     },
-    "captions": {"type": "array", "description": "frasa/kalimat hasil pengelompokan words; format bebas tapi konsisten"},
+    "captions": {"type": "array", "description": "phrases/sentences grouped from words; free format but consistent"},
     "voiceover": {
       "type": "object",
-      "description": "opsional — hanya mode B/C/D; absen pada mode A. Untuk muse-tts: wordTimings absen, timing per segmen di segmentTimings.",
+      "description": "optional: modes B/C/D only; absent in mode A. For muse-tts: wordTimings absent, per-segment timing lives in segmentTimings.",
       "required": ["source"],
       "properties": {
         "audioFile": {"type": "string"},
@@ -91,7 +91,7 @@
         },
         "segmentTimings": {
           "type": "array",
-          "description": "timing per segmen untuk muse-tts (mode D): durasi tiap segmen diukur dengan ffprobe, offset kumulatif menjadi batas segmen",
+          "description": "per-segment timing for muse-tts (mode D): each segment duration is measured with ffprobe, cumulative offsets become the segment boundaries",
           "items": {
             "type": "object",
             "required": ["text", "start", "end"],
@@ -103,10 +103,10 @@
             }
           }
         },
-        "sourceTimestamps": {"type": "string", "description": "path/jejak timestamp sumber asli agar dapat ditelusuri"}
+        "sourceTimestamps": {"type": "string", "description": "path/trace of the original source timestamps so they stay traceable"}
       }
     },
-    "ev": {"type": "array", "description": "cue visual; format bebas tapi konsumen visual & QA harus memakai kontrak sama", "items": {"type": "object"}},
+    "ev": {"type": "array", "description": "visual cues; free format but the visual and QA consumers must use the same contract", "items": {"type": "object"}},
     "sfx": {
       "type": "array",
       "items": {
@@ -130,8 +130,8 @@
       "required": ["bpm", "bars", "final"],
       "properties": {
         "bpm": {"type": "number", "exclusiveMinimum": 0},
-        "bars": {"type": "array", "minItems": 1, "items": {"type": "string"}, "description": "progresi akor per bar, mis. ['Am','F','C','G']"},
-        "final": {"type": "number", "description": "detik akhir bagian musik"},
+        "bars": {"type": "array", "minItems": 1, "items": {"type": "string"}, "description": "chord progression per bar, e.g. ['Am','F','C','G']"},
+        "final": {"type": "number", "description": "final second of the music section"},
         "finalChord": {"type": "string"},
         "breaks": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2}},
         "clapFrom": {"type": "number"},
@@ -146,9 +146,9 @@
       "type": "object",
       "required": ["t"],
       "properties": {
-        "t": {"type": "number", "minimum": 0, "description": "waktu mulai dalam detik"},
+        "t": {"type": "number", "minimum": 0, "description": "start time in seconds"},
         "id": {"type": "string"},
-        "action": {"type": "string", "description": "tindakan visual konkret, bukan hanya 'zoom'/'fade'"},
+        "action": {"type": "string", "description": "concrete visual action, not just 'zoom'/'fade'"},
         "duration": {"type": "number", "exclusiveMinimum": 0}
       }
     }

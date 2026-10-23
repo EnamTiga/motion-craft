@@ -31,20 +31,20 @@ Exception: the user forbids web search or explicitly requests illustrations only
 user provides images, prioritize their assets; search for supplements only when needed.
 
 **Browser paths (in order):**
-1. **Muse `image-search` CLI (jalur utama di Muse):**
-   `image-search "<query per scene>" --max-results 5 --language <kode>`.
+1. **Muse `image-search` CLI (main path in Muse):**
+   `image-search "<query per scene>" --max-results 5 --language <code>`.
    Take `media_url` (the full image) and record `page_url` as provenance.
    Download with curl to `public/`, then run the PIL quality check below as usual.
 2. **Browser harness tool** (if available in another harness) — use it directly.
 3. **Keyless APIs** via curl: Openverse (`api.openverse.org/v1/images/`) or the
    Wikimedia Commons API → verify & download.
-4. **Camoufox (jalur terakhir, lihat catatan di bawah).**
+4. **Camoufox (last resort, see the note below).**
 5. **All paths fail** → vector illustration for scenes that need it, REPORT in the final report.
 
-**Camoufox (last resort only):** Camoufox hanya dipasang atas persetujuan user,
-hanya bila jalur 1-3 terhalang CAPTCHA berulang pada kebutuhan gambar yang sama,
-dan pemasangannya dilaporkan. Di Muse, Camoufox bukan jalur utama pencarian
-gambar dan bukan fallback render utama. The snippet below is kept only as a
+**Camoufox (last resort only):** Camoufox is installed only with the user's
+approval, only when paths 1-3 are blocked by repeated CAPTCHAs for the same
+image need, and its installation is reported. In Muse, Camoufox is not the
+main image search path and not the main render fallback. The snippet below is kept only as a
 reference for that last-resort path:
 
    ```bash

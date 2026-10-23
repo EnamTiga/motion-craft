@@ -179,7 +179,7 @@ Every scene must feel and sound different, while remaining one sound family.
 
 ## 6.6 Voice-over mode D: Muse TTS (Muse only)
 
-Mode D ("Pakai Muse") is offered ONLY when both detection conditions hold:
+Mode D (Use Muse) is offered ONLY when both detection conditions hold:
 (1) the skill is running in the Muse harness (skill installed in
 `~/workspace/custom-skills/`, or the session states it runs in Muse), AND
 (2) the Muse TTS path is detected: `/opt/hatch/bin/tts` exists and
@@ -222,7 +222,7 @@ Flow:
 4. Synthesize per segment (Indonesian example):
 
    ```bash
-   /opt/hatch/bin/tts speak --text "<teks segmen>" --language id --format mp3 --output public/vo-seg-01.mp3
+   /opt/hatch/bin/tts speak --text "<segment text>" --language id --format mp3 --output public/vo-seg-01.mp3
    ```
 
    Limits that apply: output is MP3; the default timeout for `speak` is 120
@@ -258,8 +258,8 @@ Flow:
      "audioFile": "public/vo.mp3",
      "source": "muse-tts",
      "segmentTimings": [
-       {"text": "<teks segmen 1>", "file": "public/vo-seg-01.mp3", "start": 0.0, "end": 2.84},
-       {"text": "<teks segmen 2>", "file": "public/vo-seg-02.mp3", "start": 2.84, "end": 5.31}
+       {"text": "<segment text 1>", "file": "public/vo-seg-01.mp3", "start": 0.0, "end": 2.84},
+       {"text": "<segment text 2>", "file": "public/vo-seg-02.mp3", "start": 2.84, "end": 5.31}
      ],
      "sourceTimestamps": "qa/vo-muse-tts-segments.json"
    }
@@ -274,7 +274,7 @@ Flow:
    <= -1.2 dBFS (the existing Phase 6 rules, unchanged).
 11. Gate D for Mode D: the per-word highlight deviation target is
     **NOT APPLICABLE**, because Mode D does not produce per-word timestamps
-    ("Mode D tidak menghasilkan timestamp per kata"). What is verified
+    ("Mode D does not produce per-word timestamps"). What is verified
     instead: segment-boundary synchronization (start, middle, and end of the
     video) against `segmentTimings`, and that phrase subtitles never appear
     before their segment starts.

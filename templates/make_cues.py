@@ -27,7 +27,7 @@ plan.json minimal shape (fields omitted → defaults shown):
                        "connector": "...", "direction": "...", "reason": "...", "sfx": "paper-fold"}],
   "voiceover": {"audioFile": "public/vo.mp3", "source": "whisperx",
                 "wordTimings": [{"word": "Hi", "start": 0.4, "end": 0.7}]},   # optional
-  # muse-tts example: {"audioFile": "public/vo.mp3", "source": "muse-tts", "segmentTimings": [{"text": "Halo", "file": "public/vo-seg-01.mp3", "start": 0.0, "end": 1.2}]}
+  # muse-tts example: {"audioFile": "public/vo.mp3", "source": "muse-tts", "segmentTimings": [{"text": "Hello", "file": "public/vo-seg-01.mp3", "start": 0.0, "end": 1.2}]}
   "sfx": [{"t": 0.0, "type": "impact", "gain": 0.9}],
   "music": {"bpm": 108, "bars": ["C","G","Am","F"], "final": 18.0}
 }

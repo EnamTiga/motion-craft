@@ -37,7 +37,7 @@ impossible in your environment, tell the user; do not improvise a partial run.
 
 ```bash
 mkdir -p ~/workspace/custom-skills
-cp -r <folder-skill-ini> ~/workspace/custom-skills/motion-craft
+cp -r <this-skill-folder> ~/workspace/custom-skills/motion-craft
 ```
 
 In Muse, the skill counts as installed when the folder
@@ -127,7 +127,7 @@ as a downloadable file. Don't pretend you already rendered.
 | **A. No voice-over** (default) | User didn't ask for narration | On-screen captions/copy carry the message. No paid services without consent. |
 | **B. User-supplied audio** | User sends a narration recording | Timestamps = **WhisperX required**, UNLESS the user already supplied valid timestamps → use them directly (validate first). The user's audio is the primary timing reference; don't regenerate it, don't ask for a TTS API key. |
 | **C. ElevenLabs TTS API** | User asks for narration & agrees to use the API | Draft narration → user approves → generate with the user's chosen `model_id` + `voice_id` → use **timestamps/alignment from the API response** (no WhisperX needed); if the endpoint doesn't provide alignment, measure each clip's duration — don't invent per-word timestamps. |
-| **D. Muse TTS ("Pakai Muse")** | Running in Muse (detected, see 3.1 contract in references/05 section 6.6) AND user asks for narration | Draft narration, user approves, synthesize **per segment** with Muse TTS (`--language id` for Indonesian), measure each segment with ffprobe, cumulative offsets become segment boundaries in cues.json, phrase-level subtitles. **No WhisperX, no per-word timestamps, no API key.** Only offered when Muse TTS is detected; if the first segment fails, report and offer Mode A or C, never switch silently. |
+| **D. Use Muse (Muse TTS, "Pakai Muse")** | Running in Muse (detected, see 3.1 contract in references/05 section 6.6) AND user asks for narration | Draft narration, user approves, synthesize **per segment** with Muse TTS (`--language id` for Indonesian), measure each segment with ffprobe, cumulative offsets become segment boundaries in cues.json, phrase-level subtitles. **No WhisperX, no per-word timestamps, no API key.** Only offered when Muse TTS is detected; if the first segment fails, report and offer Mode A or C, never switch silently. |
 
 Cross-mode rules:
 - **Narration is finished and user-approved BEFORE `cues.json` is locked** — visual timing

@@ -81,7 +81,7 @@ export const cueAt = (seconds: number) => fr(seconds);
  * scene boundary), but cues.json times are absolute — mixing them is the most
  * common motion-craft bug (bars never fill, entrances never play).
  * Usage inside a scene component:
- *   const t = useSceneClock('s2-bukti');   // local frame → absolute seconds
+ *   const t = useSceneClock('s2-evidence');   // local frame → absolute seconds
  *   const a = easeAt(t, cue.t, cue.t + cue.duration);
  */
 export const useSceneClock = (id: string) => {

@@ -10,88 +10,88 @@
       "id": "s1-hook",
       "start": 0.0,
       "end": 3.4,
-      "entrance": {"id": "s1-e1", "t": 0.0, "action": "kata hook 'TAGIHAN BENCANA' mask-reveal dari bawah, objek tagihan masuk dari atas dengan spring", "duration": 0.6},
+      "entrance": {"id": "s1-e1", "t": 0.0, "action": "hook word 'DISASTER BILL' mask-reveal from below, bill object enters from above with a spring", "duration": 0.6},
       "mainActions": [
-        {"id": "s1-a1", "t": 1.2, "action": "lembar tagihan terbuka, item biaya tercetak berurutan dengan tick SFX", "duration": 1.2},
-        {"id": "s1-a2", "t": 2.6, "action": "total merah count-up, stempel 'NAIK 3x' slam + shake", "duration": 0.8}
+        {"id": "s1-a1", "t": 1.2, "action": "bill sheet opens, cost items print in sequence with tick SFX", "duration": 1.2},
+        {"id": "s1-a2", "t": 2.6, "action": "red total count-up, 'UP 3x' stamp slam + shake", "duration": 0.8}
       ],
-      "continueAction": {"id": "s1-c1", "t": 3.1, "action": "tagihan melipat menjadi kartu pertanyaan, handoff ke scene 2", "duration": 0.3},
-      "exit": {"id": "s1-x1", "t": 3.3, "action": "kartu tumbuh memenuhi layar (morph ke scene 2)", "duration": 0.3},
-      "handoff": "kartu pertanyaan"
+      "continueAction": {"id": "s1-c1", "t": 3.1, "action": "bill folds into a question card, handoff to scene 2", "duration": 0.3},
+      "exit": {"id": "s1-x1", "t": 3.3, "action": "card grows to fill the screen (morph to scene 2)", "duration": 0.3},
+      "handoff": "question card"
     },
     {
-      "id": "s2-bukti",
+      "id": "s2-evidence",
       "start": 3.4,
       "end": 7.0,
-      "entrance": {"id": "s2-e1", "t": 3.4, "action": "kartu terbuka jadi panel grafik; batang pertama menggambar diri", "duration": 0.6},
+      "entrance": {"id": "s2-e1", "t": 3.4, "action": "card opens into a chart panel; first bar draws itself", "duration": 0.6},
       "mainActions": [
-        {"id": "s2-a1", "t": 4.3, "action": "tiga batang grafik mengisi berurutan dengan ease-in-out + ticks", "duration": 1.8},
-        {"id": "s2-a2", "t": 6.3, "action": "angka '2026' count-up di atas batang terakhir + bell", "duration": 0.6}
+        {"id": "s2-a1", "t": 4.3, "action": "three chart bars fill in sequence with ease-in-out + ticks", "duration": 1.8},
+        {"id": "s2-a2", "t": 6.3, "action": "'2026' number count-up above the last bar + bell", "duration": 0.6}
       ],
-      "continueAction": {"id": "s2-c1", "t": 6.7, "action": "batang terakhir melengkung menjadi garis tren ke scene 3", "duration": 0.3},
-      "exit": {"id": "s2-x1", "t": 6.9, "action": "kamera pan mengikuti garis tren ke kanan (camera-move)", "duration": 0.4},
-      "handoff": "garis tren"
+      "continueAction": {"id": "s2-c1", "t": 6.7, "action": "last bar curves into a trend line to scene 3", "duration": 0.3},
+      "exit": {"id": "s2-x1", "t": 6.9, "action": "camera pans right following the trend line (camera-move)", "duration": 0.4},
+      "handoff": "trend line"
     },
     {
-      "id": "s3-inti-1",
+      "id": "s3-core-1",
       "start": 7.0,
       "end": 10.6,
-      "entrance": {"id": "s3-e1", "t": 7.0, "action": "garis tren membentuk keran; tetesan air pertama jatuh (plink)", "duration": 0.5},
+      "entrance": {"id": "s3-e1", "t": 7.0, "action": "trend line forms a tap; first water drop falls (plink)", "duration": 0.5},
       "mainActions": [
-        {"id": "s3-a1", "t": 7.8, "action": "tetesan turun berulang makin cepat, toples terlihat terisi", "duration": 2.0},
-        {"id": "s3-a2", "t": 9.9, "action": "label 'Rp48.000/bulan' muncul per kata dengan overshoot", "duration": 0.5}
+        {"id": "s3-a1", "t": 7.8, "action": "drops fall repeatedly, faster and faster, jar visibly fills", "duration": 2.0},
+        {"id": "s3-a2", "t": 9.9, "action": "label 'Rp48,000/month' appears word by word with overshoot", "duration": 0.5}
       ],
-      "continueAction": {"id": "s3-c1", "t": 10.3, "action": "toples bergeser ke kiri, ruang kosong di kanan untuk scene 4", "duration": 0.3},
-      "exit": {"id": "s3-x1", "t": 10.5, "action": "slide layout: toples tetap di layar (handoff), panel baru masuk", "duration": 0.4},
-      "handoff": "toples koin"
+      "continueAction": {"id": "s3-c1", "t": 10.3, "action": "jar shifts left, empty space on the right for scene 4", "duration": 0.3},
+      "exit": {"id": "s3-x1", "t": 10.5, "action": "layout slide: jar stays on screen (handoff), new panel enters", "duration": 0.4},
+      "handoff": "coin jar"
     },
     {
-      "id": "s4-inti-2",
+      "id": "s4-core-2",
       "start": 10.6,
       "end": 14.2,
-      "entrance": {"id": "s4-e1", "t": 10.6, "action": "panel perbandingan slide dari kanan, dua kolom muncul stagger", "duration": 0.6},
+      "entrance": {"id": "s4-e1", "t": 10.6, "action": "comparison panel slides in from the right, two columns appear staggered", "duration": 0.6},
       "mainActions": [
-        {"id": "s4-a1", "t": 11.5, "action": "kolom 'tanpa fitur' mengecil (spring terbalik), kolom 'dengan fitur' tumbuh 0,1 dtk kemudian di titik sama", "duration": 1.2},
-        {"id": "s4-a2", "t": 13.0, "action": "selisih harga count-up hijau + sparkle", "duration": 0.7}
+        {"id": "s4-a1", "t": 11.5, "action": "'without feature' column shrinks (reverse spring), 'with feature' column grows 0.1 s later at the same point", "duration": 1.2},
+        {"id": "s4-a2", "t": 13.0, "action": "price difference count-up in green + sparkle", "duration": 0.7}
       ],
-      "continueAction": {"id": "s4-c1", "t": 13.8, "action": "kedua kolom melebur jadi satu kartu CTA", "duration": 0.3},
-      "exit": {"id": "s4-x1", "t": 14.1, "action": "kartu CTA membesar ke tengah (iris)", "duration": 0.4},
-      "handoff": "kartu CTA"
+      "continueAction": {"id": "s4-c1", "t": 13.8, "action": "both columns merge into one CTA card", "duration": 0.3},
+      "exit": {"id": "s4-x1", "t": 14.1, "action": "CTA card enlarges to the center (iris)", "duration": 0.4},
+      "handoff": "CTA card"
     },
     {
       "id": "s5-cta",
       "start": 14.2,
       "end": 18.5,
-      "entrance": {"id": "s5-e1", "t": 14.2, "action": "kartu CTA settle di tengah; logo fade-in kecil di bawah", "duration": 0.6},
+      "entrance": {"id": "s5-e1", "t": 14.2, "action": "CTA card settles in the center; small logo fade-in below", "duration": 0.6},
       "mainActions": [
-        {"id": "s5-a1", "t": 15.2, "action": "CTA 'Cek hematmu sekarang' per kata + tombol pulse halus", "duration": 1.0},
-        {"id": "s5-a2", "t": 16.6, "action": "URL muncul dengan sparkle; logo breathing", "duration": 0.8}
+        {"id": "s5-a1", "t": 15.2, "action": "CTA 'Check your savings now' word by word + subtle button pulse", "duration": 1.0},
+        {"id": "s5-a2", "t": 16.6, "action": "URL appears with sparkle; logo breathing", "duration": 0.8}
       ],
-      "continueAction": {"id": "s5-c1", "t": 17.6, "action": "semua elemen hold stabil untuk dibaca", "duration": 0.5},
-      "exit": {"id": "s5-x1", "t": 18.3, "action": "fade penutup singkat + akord akhir", "duration": 0.2}
+      "continueAction": {"id": "s5-c1", "t": 17.6, "action": "all elements hold steady to be read", "duration": 0.5},
+      "exit": {"id": "s5-x1", "t": 18.3, "action": "short closing fade + final chord", "duration": 0.2}
     }
   ],
   "transition_plan": [
-    {"at": 3.4, "mechanism": "morph", "duration": 0.3, "connector": "tagihan → kartu pertanyaan", "direction": "tumbuh dari tengah", "reason": "benda yang sama berubah wujud; kontinuitas objek", "sfx": "paper-fold"},
-    {"at": 7.0, "mechanism": "camera-move", "duration": 0.4, "connector": "garis tren", "direction": "pan kanan mengikuti garis", "reason": "garis melanjutkan cerita data ke scene berikut", "sfx": "soft-whoosh"},
-    {"at": 10.6, "mechanism": "layout-shift", "duration": 0.4, "connector": "toples koin", "direction": "geser kiri, panel masuk kanan", "reason": "objek dipertahankan sebagai kontinuitas, layout tersambung", "sfx": "slide"},
-    {"at": 14.2, "mechanism": "iris", "duration": 0.4, "connector": "kartu CTA", "direction": "membesar dari posisi kartu", "reason": "fokus pindah ke satu ajakan penutup", "sfx": "impact"}
+    {"at": 3.4, "mechanism": "morph", "duration": 0.3, "connector": "bill → question card", "direction": "grows from the center", "reason": "the same object changes form; object continuity", "sfx": "paper-fold"},
+    {"at": 7.0, "mechanism": "camera-move", "duration": 0.4, "connector": "trend line", "direction": "pan right following the line", "reason": "the line continues the data story into the next scene", "sfx": "soft-whoosh"},
+    {"at": 10.6, "mechanism": "layout-shift", "duration": 0.4, "connector": "coin jar", "direction": "shift left, panel enters from the right", "reason": "object kept as continuity, layout stays connected", "sfx": "slide"},
+    {"at": 14.2, "mechanism": "iris", "duration": 0.4, "connector": "CTA card", "direction": "enlarges from the card position", "reason": "focus moves to one closing call to action", "sfx": "impact"}
   ],
   "voiceover": {
     "audioFile": "public/vo.mp3",
     "source": "elevenlabs",
     "modelId": "eleven_multilingual_v2",
-    "voiceId": "CONTOH_VOICE_ID",
+    "voiceId": "EXAMPLE_VOICE_ID",
     "wordTimings": [
-      {"word": "Pernah", "start": 0.4, "end": 0.7},
-      {"word": "kaget", "start": 0.7, "end": 1.0},
-      {"word": "lihat", "start": 1.0, "end": 1.3},
-      {"word": "tagihan?", "start": 1.3, "end": 2.0}
+      {"word": "Ever", "start": 0.4, "end": 0.7},
+      {"word": "shocked", "start": 0.7, "end": 1.0},
+      {"word": "by", "start": 1.0, "end": 1.3},
+      {"word": "bills?", "start": 1.3, "end": 2.0}
     ],
     "sourceTimestamps": "qa/vo-raw-alignment.json"
   },
   "ev": [
-    {"t": 0.0, "id": "ev-hook-visible", "note": "kata hook harus terbaca penuh di frame 0"}
+    {"t": 0.0, "id": "ev-hook-visible", "note": "hook word must be fully readable at frame 0"}
   ],
   "sfx": [
     {"t": 0.0, "type": "impact", "gain": 0.9},
