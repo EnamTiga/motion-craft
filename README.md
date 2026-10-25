@@ -35,7 +35,7 @@ In Muse, copy the skill folder into `~/workspace/custom-skills/motion-craft/` in
 
 ### The 8 phases
 
-1. **Brief and assets.** The agent asks once about platform, duration, mood, and voice-over, then gathers references and licensed assets.
+1. **Brief and assets.** The agent asks once about platform, duration, and voice-over, then gathers references and licensed assets.
 2. **Fact research.** Numbers and claims are sourced and labeled. Unverified claims are flagged, not dressed up as data.
 3. **Concept and cues.** The agent writes the concept, the beat plan, the transition plan, and the music plan, then generates `cues.json` with `templates/make_cues.py`.
 4. **Motion standards.** Scenes are designed against written motion standards, including the scene cycle and transition rules below.
@@ -123,7 +123,7 @@ Make a video about <product or topic>. The target audience is <audience>. Here a
 <attach files, images, or video if any>
 ```
 
-The agent asks one round of questions (platform, duration, mood, voice-over), then produces the video with animation, music, and sound effects, plus the QA report.
+The agent asks one round of questions (platform, duration, and voice-over), then produces the video with animation, music, and sound effects, plus the QA report.
 
 ## License
 

@@ -22,7 +22,7 @@ use the honest fallback in 5.5.
 ```bash
 mkdir -p proj && cd proj && mkdir -p src public out
 cat > package.json <<'EOF'
-{"name":"video","version":"1.0.0","private":true,"dependencies":{"@fontsource/poppins":"*","@remotion/bundler":"4.0.538","@remotion/cli":"4.0.538","@remotion/renderer":"4.0.538","react":"18","react-dom":"18","remotion":"4.0.538"}}
+{"name":"video","version":"1.0.0","private":true,"dependencies":{"@remotion/bundler":"4.0.538","@remotion/cli":"4.0.538","@remotion/renderer":"4.0.538","react":"18","react-dom":"18","remotion":"4.0.538"}}
 EOF
 cat > tsconfig.json <<'EOF'
 {"compilerOptions":{"target":"ES2020","module":"ESNext","moduleResolution":"node","jsx":"react-jsx","strict":false,"resolveJsonModule":true,"esModuleInterop":true,"skipLibCheck":true}}
@@ -46,8 +46,9 @@ cp <skill-folder>/templates/helpers.tsx src/helpers.tsx
 # generate src/cues.json from your structured plan (see templates/make_cues.py):
 python3 <skill-folder>/templates/make_cues.py plan.json --out src/cues.json
 npm install 2>&1 | tail -2
-cp node_modules/@fontsource/poppins/files/poppins-latin-900-normal.woff2 public/pop-900.woff2
-cp node_modules/@fontsource/poppins/files/poppins-latin-600-normal.woff2 public/pop-600.woff2
+# typeface: install the @fontsource package for the typeface the agent chose in the style
+# paragraph, then copy its files into public/ using the same local font loading pattern:
+cp node_modules/@fontsource/<chosen-typeface>/files/<chosen-typeface>-latin-<weight>-normal.woff2 public/<chosen-typeface>-<weight>.woff2
 ```
 
 Remotion version **4.0.538** is pinned: it was verified as the latest stable npm

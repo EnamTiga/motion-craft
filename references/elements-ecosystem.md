@@ -51,5 +51,5 @@ const cue = cues.scenes[2].mainAction; // {t: 6.4}
 - This catalog is a **reference map** — component names and install methods can change;
   check the source repo when you're about to use one. If the install fails or the name doesn't exist, don't
   invent component names; write it yourself from the motion plan (that's always possible).
-- Priority stays the same: abstract/vector scenes from your own palette (Phase 4.2) are the base style;
-  elements are used when they speed things up without homogenizing the result.
+- Priority stays the same: the base treatment is the treatment the agent chose in the style
+  paragraph for this production; elements are used when they speed things up without homogenizing the result.

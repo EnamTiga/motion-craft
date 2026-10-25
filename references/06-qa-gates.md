@@ -33,7 +33,7 @@ the target specification, tool configuration, and a table:
 
 ## 7.2 Gate A — audit of brief, data, assets, and plans before render
 
-- Cross-check aspect ratio, resolution, FPS, duration, language, CTA, mood, narration, constraints, and
+- Cross-check aspect ratio, resolution, FPS, duration, language, CTA, style paragraph, narration, constraints, and
   user priorities against the structured configuration. No default may silently
   override an explicit request.
 - Validate all cues are finite and in range, scenes have no unplanned gaps/overlaps,
@@ -48,6 +48,8 @@ the target specification, tool configuration, and a table:
 - The motion plan table must be complete: entrance, two action beats after the entrance for scenes
   ≥3 seconds, development, handoff, and the relationship to narration. Cues in the plan are not proof
   the actions are visible in the render.
+- The plan contains the style paragraph from Phase 1c, and the rendered flow matches that
+  paragraph. A flow that differs from the paragraph is a Gate A finding, whatever the flow looks like.
 - Audit the transition plan: every boundary has a mechanism and a rationale, no two
   consecutive identical ones, at least 3 relevant mechanisms when there are ≥5 scenes. Different wipe colors/directions are not
   a new mechanism.

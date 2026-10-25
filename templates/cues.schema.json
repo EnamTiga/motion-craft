@@ -139,7 +139,8 @@
         "arpFrom": {"type": "number"},
         "build": {"type": "array", "items": {"type": "number"}, "maxItems": 2}
       }
-    }
+    },
+    "styleDecision": {"type": "string", "description": "One short paragraph stating the style decision for this production and the reason for it. Optional, so cues written before this change still validate."}
   },
   "definitions": {
     "cue": {

@@ -5,34 +5,35 @@
 > (recipes) can be skimmed if you already know animation principles; 4.3–4.4 (Remotion
 > rules, helpers) are mandatory once you write code.
 
-## 4.1 Principles that must be visible in the result
+## 4.1 Technique library: pick what fits the plan, with a written reason in the motion plan
 
-- **Easing:** primary motion must never be linear. Use spring / `Easing.out(cubic)` /
-  ease-in-out. Fast entry then decelerating; exits accelerating.
+- **Easing:** spring, `Easing.out(cubic)`, or ease-in-out are available options. Fast entry
+  then decelerating; exits accelerating.
 - **Anticipation → overshoot → settle:** the element pulls back slightly before launching,
   passes the target, then settles (spring with low damping).
 - **Squash & stretch** on falling, bouncing, or impacting objects (scaleX/scaleY moving
   oppositely for a few frames).
 - **Overlapping action & follow-through:** parts of an element move with different delays
   (a label trailing the object, a shadow trailing the subject).
-- **Stagger:** elements of a group enter in sequence, roughly 0.067–0.133 seconds apart,
-  converted to the project FPS. Never all at once.
+- **Stagger:** elements of a group enter in sequence, for example roughly 0.067–0.133 seconds
+  apart, converted to the project FPS.
 - **Kinetic typography:** text appears per letter/word (mask reveal rising from below,
-  scale-bounce, small rotation). Not a plain fade.
-- **Depth & camera:** at least 3 layers (background, midground, foreground), parallax,
-  and a camera moving slowly throughout the scene (push-in 1.00→1.06, small pan, rotation
-  ≤ 1.5°).
-- **Secondary motion always alive:** floating particles/dots, swaying ambience, slow
-  rotation, "breathing" (scale ±2%), waves. No frame should feel dead.
+  scale-bounce, small rotation).
+- **Depth & camera:** layers (background, midground, foreground), parallax, and a slow camera
+  move are available, for example a push-in of 1.00 to 1.06, a small pan, or a rotation of
+  at most 1.5 degrees.
+- **Secondary motion options:** floating particles/dots, swaying ambience, slow
+  rotation, "breathing" (scale ±2%), waves.
 - **Meaningful transitions:** layered color wipes, circle iris, an object growing to fill
-  the screen, shape morph, match-cut. Avoid pure cross-fades. **Every transition has an SFX.**
-- **Brief screen shake** (around 0.2–0.4 seconds, decaying, converted to project FPS)
-  at impact moments.
+  the screen, shape morph, match-cut. A transition SFX matched to the mechanism is available
+  for every transition.
+- **Brief screen shake** (around 0.2–0.4 seconds as an example range, decaying, converted
+  to project FPS) at impact moments.
 - **Number count-up**, **path drawing** (stroke-dashoffset), **filling bars/meters** for
   data.
 - **Rhythm:** key movements follow the narration's meaning/timestamps; use the music beat
-  when it doesn't conflict. Hook ≤ 2.5s; frame 0 already shows the hook word; no static
-  frame > 0.5s.
+  when it doesn't conflict. Hook ≤ 2.5s; frame 0 already shows the hook word. An unplanned
+  static frame longer than 0.5 seconds is a major bug. A planned hold noted in the plan is allowed.
 - **Readability:** key text stays fully visible ≥ 0.35s + 0.15s per word; text size
   ≥ 40 px in portrait; high contrast; portrait safe zones: x 60–1020, y 180–1650
   (avoid platform UI overlays).
@@ -73,14 +74,17 @@ transition finishes, the main object must perform an action that explains the sc
 - All motion must clarify meaning and attention hierarchy. Replacing monotony with random
   motion, constant shaking, or everything moving hard at once is forbidden.
 
+The actions themselves are the agent's content choice; this section does not prescribe
+which actions.
+
 ## 4.1b Varied and meaningful transitions — required, no monotony
 
 - Choose transitions based on the content/shape/motion relationship between two scenes; **don't
   use the same wipe at every boundary**. A different color or direction of wipe alone doesn't
   count as a different transition mechanism.
 - Don't use the same transition mechanism on two consecutive boundaries. For videos with ≥5
-  scenes, use at least **3 relevant transition mechanisms**, while keeping one consistent
-  visual language.
+  scenes, use at least **3 relevant transition mechanisms**, while keeping the visual language
+  the agent chose for this production.
 - Favor **object continuity/handoff**, **match-cut**, **shape morph**, **connected layout
   changes**, or **camera moves with parallax**. Iris, occlusion/reveal, and layered wipes may
   be used selectively when they support the message. Don't shuffle effect types just to hit
@@ -99,10 +103,9 @@ transition finishes, the main object must perform an action that explains the sc
 
 ## 4.2 Visual style
 
-- Clean and consistent **flat vector** illustration (SVG), colors from the palette. Bold
-  basic shapes, rounded corners. When using internet images per Phase 1a, integrate them
-  with consistent layout and motion; the vector style is not an excuse to skip the required
-  asset search.
+- Visual treatment follows the style paragraph for this production. Bold basic shapes and
+  rounded corners are examples, not requirements. When using internet images per Phase 1a,
+  integrate them with consistent layout and motion.
 - **"AI slop" is forbidden:** tacky gradient meshes, excessive glow, blurred light rays,
   glassmorphism, generic stock photos, emoji as illustration, random decorations that don't
   support the message.
@@ -163,6 +166,9 @@ export const spr = (frame: number, delaySeconds=0) => spring({
 
 ## 4.5 Motion recipes per element type (pick what fits, combine)
 
+No row in this table is required (example only, not required). The agent may invent motions
+that do not appear in this table; QA checks motion against the plan, not against this table.
+
 | element | motion |
 |---|---|
 | Title | kinetic per word/letter + overshoot; at the climax scale-slam + shake |
@@ -176,11 +182,8 @@ export const spr = (frame: number, delaySeconds=0) => spring({
 | Transition | Chosen per boundary based on object/message relationships: handoff, match-cut, morph, layout change, camera move, iris, or selective wipe. Follow 4.1b, not a global wipe. |
 | Scene content after the transition | Main action explaining the message → continued action as narration develops → handoff; camera/ambient/subtitles alone aren't enough. Follow 4.1a. |
 
-## 4.6 Default palette & typography (if the user has no brand)
+## 4.6 Palette & typography
 
-`dark #1B1F1C · light #F4F1E9 · accent #E2603C · green #6E8F63 · gold #C9A227 ·
-sun #FFC93C · sky #8FD3E8 · blue #3FA7D6 · red #C8372D`
-
-The three base colors rotate between scenes. Font: **Poppins** (900 for titles, 600
-for body), bundled locally (see Phase 5). If the user has a brand, brand wins over
-all defaults.
+Palette and typography: the agent chooses both for each production and records the choice
+and the reason in the style paragraph. Brand supplied by the user wins. Readability
+thresholds still apply: contrast target 4.5:1 and the minimum text sizes in Section 4.1.

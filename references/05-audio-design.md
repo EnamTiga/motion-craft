@@ -25,6 +25,7 @@
 - Match the music character to the Phase 1 answers (tempo `bpm`, progression `bars`,
   `breaks`). Examples: epic = minor, 120–128 BPM; cheerful = major, 110–120 BPM; chill = 85–95
   BPM without a hard build.
+- No BPM range, chord example, or SFX map row in this file is required; the agent designs music and SFX for each production and records the character in the style paragraph.
 
 ## 6.2 Visual → sound map
 

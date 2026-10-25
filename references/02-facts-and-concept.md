@@ -33,14 +33,19 @@
    flipping ever faster; "saves money" → coin jar filling up; "safe" → vault door closing +
    stamp; "hot" → shadow shrinking as the sun sits overhead; "fast" → speed lines + a
    meter surging.
-4. **Climax = 1 image + 1 sound** (e.g. big stamp + impact + full chord). Decide it first,
-   build backwards from there.
+4. **Climax example (one option, not a required formula or build order):** 1 image + 1 sound
+   (e.g. big stamp + impact + full chord). The agent may choose any climax method that
+   fits the concept and records it in the plan.
 5. One video = one new concept. If it resembles another video in the conversation, change
    the metaphor.
 
-## 3.2 Default scene structure (15–21s)
+## 3.2 Example scene structure (15–21s, one possible shape, not a default)
 
-Pattern: **hook → problem/evidence → cause/how it works (2–3 beats) → benefit/tips → CTA/source**.
+Example shape: **hook → problem/evidence → cause/how it works (2–3 beats) → benefit/tips → CTA/source**.
+
+This table is one example only (example only, not required). The agent may use a different
+scene count, different functions, and different durations; QA checks the structure
+against the plan, not against this table.
 
 | scene | function | typical duration |
 |---|---|---|
@@ -56,6 +61,8 @@ arrangement follows the narration. The music beat is not a reason to shift subti
 cut words short.
 
 ## 3.2a Motion plan per scene — required before writing animation
+
+Style paragraph (from Phase 1c, copied here):
 
 Build an internal table read during implementation and QA:
 

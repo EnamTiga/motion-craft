@@ -83,12 +83,36 @@ the user is often reading from a phone.
 2. **Music AND sound effects are mandatory** in every video. A video without music/SFX counts as a failure.
 3. **Motion principles are mandatory, not optional:** every scene has an entrance, a main
    action after the transition, development during the narration, and an exit/handoff. Never
-   animate only the transition and leave the scene content like a poster. Details in Phase 4.
+   animate only the transition and leave the scene content like a poster. This rule governs
+   that a scene moves and develops; it does not prescribe any look, technique, or motion
+   vocabulary. Details in Phase 4.
 4. **Don't guess facts.** Numbers/claims come from a source, are labeled correctly, or
    are flagged "demo numbers" and reported.
 5. **Look at the result yourself** (stills + frames from the final MP4) before handing off.
    Don't claim it's "epic/cool" without checking.
 6. **Be honest about limitations.** If something failed or isn't perfect, say so in the final report.
+
+## Agent style freedom
+
+The agent decides the concept and the style of each production itself. There is
+no fixed formula and no fixed style in this skill: no style menu, no style
+profile, no required reference study, and no style set from outside the
+production. A style that worked in a previous production is not a default for
+the next one.
+
+Before building, the agent writes one short paragraph in the plan stating the
+style decision for this production and the reason for it: visual treatment,
+palette, typography, motion character, and music character, in the agent's own
+words. That paragraph is the audit trail for the style decision. It is not a
+formula and it does not bind the next production.
+
+The user judges the finished result as QA. User revision requests change that
+production only; they do not create a new fixed style, menu, or profile.
+
+What stays fixed is technical discipline, not style: cues.json as the single
+source of timing, the 5-gate QA, the voice-over modes, and every measured
+threshold in this skill. A measured threshold is never rewritten as a style
+rule, and a style choice is never used to bypass a measured threshold.
 
 ## Rule priority and definition of done
 
@@ -96,7 +120,7 @@ the user is often reading from a phone.
   link to it. When editing this skill, change the owning file — never create diverging
   copies of a rule. (Owner map: voice-over modes & API key safety → this page +
   `05-audio-design.md`; motion rules → `03-motion-standards.md`; QA statuses →
-  `06-qa-gates.md`; asset pipeline → `01-brief-and-assets.md`.)
+  `06-qa-gates.md`; asset pipeline → `01-brief-and-assets.md`; style freedom → this page.)
 - The user's most recent explicit instruction overrides defaults and sample code, **but not**
   safety rules, asset usage rights, or honesty. Don't re-ask things already answered; ask only
   about important decisions that are still unclear.
@@ -146,16 +170,17 @@ Cross-mode rules:
 
 ## Anti-slop — style hard lines
 
-- Clean **flat vector** illustration; no tacky gradient meshes, no excessive glow, no
-  blurred rays, no glassmorphism, no generic stock photos, no emoji as illustration, no random meaningless ornament.
-- Key text in sentence case; **one accent color** for emphasized words/numbers —
-  not the whole line. Body text contrast target 4.5:1.
+- Visual treatment: see Agent style freedom above. Any visual treatment is allowed when it
+  serves the message and the plan records the reason; ornament with no purpose
+  is a QA note, not a banned list.
+- Body text contrast target 4.5:1.
 - **One video = one new concept.** The visual metaphor proves the promise, it's not decoration.
   Never assemble a video just by pasting side-by-side components/elements (see
   `references/elements-ecosystem.md` for rules on using external elements).
 - No narration-less feature-list enumeration, no lorem placeholder content, no large
   ALL-CAPS, no walls of small text, no long durations from naming features one by one.
-- Every scene must advance the story: Hook → Proof/Core → Impact → CTA. Monotony = a major bug.
+- Every scene must advance the story the agent defined in the plan. QA checks the flow
+  against the plan; a deliberate uniform flow noted in the style paragraph is not monotony.
 
 ## Quick flow (summary; details in each reference)
 

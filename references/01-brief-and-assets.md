@@ -14,11 +14,15 @@
   ffmpeg -i ref.mp4 -vf "select='gt(scene,0.3)',showinfo" -f null - 2>&1 | grep -c pts_time
   ```
 
-  Build a contact sheet from the frames, look at it, then summarize **the style to emulate**:
-  cut rhythm, transition types, typography style, palette, motion speed, camera usage.
+  Build a contact sheet from the frames, look at it, then summarize the cut rhythm,
+  transition types, typography style, palette, motion speed, and camera usage of
+  the reference. Studying a user-supplied reference is optional: the agent may
+  use it, or may ignore it, and there is no obligation to emulate its style.
+  If the agent uses the reference, the style paragraph records that decision
+  and the reason.
   You cannot "hear" audio, so if tempo matters, try `pip install librosa` to estimate BPM,
   or ask the user.
-  **Copy the style only. Do not copy content, characters, logos, or copyrighted assets
+  **Do not copy content, characters, logos, or copyrighted assets
   belonging to others.**
 - Don't ask about things already clear from the brief or references. Write those as
   **assumptions** in the summary.
@@ -119,15 +123,15 @@ Before I build, answer briefly (anything can be "up to you"):
 3. Main message viewers should remember? (one sentence)
 4. Points/features/facts that MUST appear + which is the main focus?
 5. Source of facts? a) from you/documents  b) I search the web  c) mix. Any claims/numbers that are off-limits?
-6. Visual mood? a) epic cinematic  b) fun playful  c) elegant minimalist  d) futuristic tech  e) retro  f) up to you
-7. Brand: colors/fonts/logo/mascot? (if none, I'll pick a palette myself: a) yes  b) no)
-8. Visual assets (ask only if needed): a) your images  b) licensed internet images + illustrations  c) illustrations only  d) up to you. If there are no reference images from you, the default is that I search licensed internet images to use in the video.
-9. Music: a) energetic/epic  b) cheerful  c) chill/lofi  d) dramatic. SFX: a) dense  b) moderate  c) minimal
-10. On-screen text: language? Any CTA at the end (provide its text)? Anything that must not appear?
-11. Voice-over? a) Yes, create with the ElevenLabs API (mode C)  b) No (mode A)  c) Use audio I send (mode B)  d) Use Muse narration (mode D, only if offered in Muse)  e) Up to you.
+6. Brand: colors/fonts/logo/mascot supplied by the user? If the user supplies brand assets,
+   they constrain the production. Brand supplied by the user wins. If not, the agent decides
+   palette and typography and records them in the style paragraph.
+7. Visual assets (ask only if needed): a) your images  b) licensed internet images + illustrations  c) illustrations only  d) up to you. If there are no reference images from you, the default is that I search licensed internet images to use in the video.
+8. On-screen text: language? Any CTA at the end (provide its text)? Anything that must not appear?
+9. Voice-over? a) Yes, create with the ElevenLabs API (mode C)  b) No (mode A)  c) Use audio I send (mode B)  d) Use Muse narration (mode D, only if offered in Muse)  e) Up to you.
 ```
 
-Question 11 is the **voice-over mode selection** (see SKILL.md). Mode C: ask for language,
+Question 9 is the **voice-over mode selection** (see SKILL.md). Mode C: ask for language,
 voice character, `model_id`, and `voice_id` (or offer to help pick from the official
 API/documentation). Mode B: ask for the audio (and timestamps if available). Don't ask for
 API keys in this form; handle credential delivery in Phase 6.
@@ -136,11 +140,14 @@ Offer option d ONLY when Muse is detected per SKILL.md; never print option d in 
 ## 1c. After the user answers
 
 - If the user answers "up to you / anything / go ahead" for something, use the **defaults**: 9:16,
-  1080×1920, 30 fps, 15–20s, mood matching the product, palette from Phase 4.6, music and SFX
-  density chosen per context (not always 120 BPM), no new narration unless requested
+  1080×1920, 30 fps, 15–20s, style decided by the agent, style paragraph written by the agent,
+  music and SFX density chosen per context (not always 120 BPM), no new narration unless requested
   (mode A), language following the user. If the user already sent narration audio (mode B), use
   that audio and match the duration to it, not the 15–20 second default.
 - Write a **5–8 line concept summary** (main visual metaphor, scene flow, climax moment,
   palette, music tempo) and **immediately proceed to building without waiting for approval**, unless
-  something important is genuinely missing. Ask again only when stuck, and only one
+  something important is genuinely missing. The summary must include one short style paragraph
+  stating the style decision for this production and the reason for it, covering visual treatment,
+  palette, typography, motion character, and music character. The paragraph is written before
+  building and kept with the plan (see Agent style freedom in SKILL.md). Ask again only when stuck, and only one
   question.
